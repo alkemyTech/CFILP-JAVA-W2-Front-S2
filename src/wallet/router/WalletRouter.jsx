@@ -7,7 +7,7 @@ export const WalletRouter = () => {
         <>
             <Layout>
                 <Routes>
-                    <Route path="/*" element={<Dashboard />} />
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/*" element={<Navigate to={"/"} />} />
                 </Routes>
             </Layout>
