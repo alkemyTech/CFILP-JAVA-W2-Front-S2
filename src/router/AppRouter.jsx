@@ -1,16 +1,26 @@
-import { Route, Routes } from 'react-router'
-import { Layout } from '../layout/Layout'
-import { Dashboard } from "../pages/Dashboard";
+import { Navigate, Route, Routes } from 'react-router';
+import { WalletRouter } from '../wallet/router/WalletRouter';
+import { AuthRoutes } from '../auth/routes/AuthRoutes';
 
 export const AppRouter = () => {
+
+    const authStatus = 'authenticated';
+
     return (
         <>
-            <Layout>
+            {
                 <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/about" element={<h1>About</h1>} />
+                    {
+                        (authStatus === 'authenticated') ? (
+
+                            <Route path="/*" element={<WalletRouter />} />
+                        ) :
+                            (<Route path="/auth/*" element={<AuthRoutes />} />)
+                    }
+                    <Route path='/*' element={<Navigate to="/auth/login" />} />
                 </Routes>
-            </Layout>
+            }
+
         </>
     )
 }
