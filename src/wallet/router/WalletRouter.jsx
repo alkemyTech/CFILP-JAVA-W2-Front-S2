@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router';
-import { Dashboard } from "../pages/Dashboard";
 import { Layout } from "../layout/Layout";
+import { Accounts, Dashboard } from '../pages';
+
 
 export const WalletRouter = () => {
     return (
@@ -8,6 +9,7 @@ export const WalletRouter = () => {
             <Layout>
                 <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    <Route path="/accounts" element={<Accounts />} />
                     <Route path="/*" element={<Navigate to={"/"} />} />
                 </Routes>
             </Layout>
