@@ -47,7 +47,7 @@ export const Dashboard = () => {
         },
         ticks: {
           color: '#CBD5E0',
-          callback: function(value) {
+          callback: function (value) {
             return '$' + value;
           },
           stepSize: 100, // Ajustar los pasos del eje Y para que se parezca más
@@ -73,7 +73,7 @@ export const Dashboard = () => {
         mode: 'index',
         intersect: false,
         callbacks: {
-          label: function(context) {
+          label: function (context) {
             let label = context.dataset.label || '';
             if (label) {
               label += ': ';
@@ -117,7 +117,7 @@ export const Dashboard = () => {
 
           <div className="p-3 rounded-full bg-blue-600/10">
 
-       
+
 
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -269,4 +269,6 @@ export const Dashboard = () => {
         </div>
       </div>
     </div>
-  );
+
+  )
+};
