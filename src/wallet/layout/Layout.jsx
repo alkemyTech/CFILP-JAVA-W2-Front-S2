@@ -4,7 +4,7 @@ import { HamburgerMenu } from '../components/HamburgerMenu'
 //FIXME: queda un borde blanco en la parte inferior del contenido del layout
 export const Layout = ({ children }) => {
     return (
-        <div className="min-h-screen flex flex-col bg-red-50 dark:bg-gray-900 antialiased">
+        <div className="min-h-screen flex flex-col bg-[#E9F1F7] dark:bg-gray-900 antialiased">
             {/* <Header /> */}
             <div className="flex flex-1 pt-14">
                 <HamburgerMenu />
