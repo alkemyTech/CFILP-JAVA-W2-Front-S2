@@ -38,7 +38,7 @@ export const LoginPage = () => {
     }, [errorMessage]);
 
     return (
-        <section className="bg-[#2D3748] dark:bg-gray-900">
+        <section className="min-h-screen bg-[#2D3748] bg-cover bg-center dark:bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white hover:text-red-200">
                     <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
