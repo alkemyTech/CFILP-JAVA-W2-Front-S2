@@ -19,18 +19,18 @@ export const Dashboard = () => {
     datasets: [
       {
         label: 'Saldo',
-        data: [300, 350, 600, 320, 380, 250], // Ejemplo de datos
+        data: [300, 350, 650, 320, 400, 300], // Datos más acordes al gráfico visual
         fill: true,
-        backgroundColor: 'rgba(128, 102, 204, 0.3)', // Un púrpura suave con transparencia
-        borderColor: '#8066CC', // Púrpura más intenso para la línea
-        tension: 0.4, // Curva de la línea
-        pointBackgroundColor: '#8066CC',
+        backgroundColor: 'rgba(128, 102, 204, 0.2)', // Relleno más suave
+        borderColor: '#A080D0', // Línea púrpura más suave
+        tension: 0.4,
+        pointBackgroundColor: '#A080D0',
         pointBorderColor: '#fff',
         pointBorderWidth: 1,
-        pointRadius: 4,
-        pointHoverRadius: 6,
+        pointRadius: 3, // Puntos más pequeños
+        pointHoverRadius: 5,
         pointHitRadius: 10,
-        clip: false, // Permite que el punto sobresalga un poco
+        clip: false,
       },
     ],
   };
@@ -43,13 +43,14 @@ export const Dashboard = () => {
         beginAtZero: false,
         grid: {
           drawBorder: false,
-          color: 'rgba(255, 255, 255, 0.1)', // Líneas de la cuadrícula sutiles
+          color: 'rgba(255, 255, 255, 0.05)', // Líneas de cuadrícula aún más sutiles
         },
         ticks: {
           color: '#CBD5E0',
           callback: function(value) {
-            return '$' + value; // Formatear como moneda
+            return '$' + value;
           },
+          stepSize: 100, // Ajustar los pasos del eje Y para que se parezca más
         },
       },
       x: {
@@ -83,42 +84,44 @@ export const Dashboard = () => {
             return label;
           },
         },
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fondo del tooltip un poco más transparente
         titleColor: '#fff',
         bodyColor: '#fff',
-        borderColor: '#8066CC',
+        borderColor: '#A080D0',
         borderWidth: 1,
         cornerRadius: 4,
       },
     },
     elements: {
       point: {
-        borderRadius: 4, // Bordes redondeados para los puntos
+        borderRadius: 2, // Bordes aún más redondeados
         borderWidth: 1,
       },
+      line: {
+        borderWidth: 2, // Línea un poco más gruesa
+      }
     },
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
 
-      {/* 1. Mosaico Saldo Actual (sin cambios) */}
-      <div className="bg-[#395C6B] backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all">
-        {/* ... (tu código anterior para el saldo actual) ... */}
+      {/* 1. Mosaico Saldo Actual */}
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-300">Saldo disponible</p>
+            <p className="text-sm font-medium text-gray-400">Saldo disponible</p>
             <p className="text-3xl font-bold text-white mt-2">$12,500.00</p>
-            <p className="text-xs text-gray-400 mt-1">Cuenta principal</p>
+            <p className="text-xs text-gray-500 mt-1">Cuenta principal</p>
           </div>
-          <div className="p-3 rounded-full bg-blue-500/10">
+          <div className="p-3 rounded-full bg-blue-600/10">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-6 h-6 text-blue-400"
+              stroke="#6698FF"
+              className="w-6 h-6"
             >
               <path
                 strokeLinecap="round"
@@ -128,7 +131,7 @@ export const Dashboard = () => {
             </svg>
           </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-white/5">
+        <div className="mt-4 pt-4 border-t border-gray-700">
           <p className="text-sm text-green-400 flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -136,7 +139,7 @@ export const Dashboard = () => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-4 h-4 text-green-400 mr-1"
+              className="w-4 h-4 mr-1"
             >
               <path
                 strokeLinecap="round"
@@ -149,9 +152,8 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {/* 2. Mosaico Últimos Movimientos (sin cambios) */}
-      <div className="bg-[#395C6B] backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all">
-        {/* ... (tu código anterior para los últimos movimientos) ... */}
+      {/* 2. Mosaico Últimos Movimientos */}
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Últimos movimientos</h3>
           <svg
@@ -159,8 +161,8 @@ export const Dashboard = () => {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-5 h-5 text-purple-400"
+            stroke="#8A6ACF"
+            className="w-5 h-5"
           >
             <path
               strokeLinecap="round"
@@ -179,7 +181,7 @@ export const Dashboard = () => {
             <li key={index} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${
-                  tx.type === 'income' ? 'bg-green-500/10' : 'bg-red-500/10'
+                  tx.type === 'income' ? 'bg-green-600/10' : 'bg-red-600/10'
                 }`}>
                   {tx.type === 'income' ? (
                     <svg
@@ -187,8 +189,8 @@ export const Dashboard = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4 text-green-400"
+                      stroke="#50C878"
+                      className="w-4 h-4"
                     >
                       <path
                         strokeLinecap="round"
@@ -202,8 +204,8 @@ export const Dashboard = () => {
                       fill="none"
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-4 h-4 text-red-400"
+                      stroke="#FF4D4D"
+                      className="w-4 h-4"
                     >
                       <path
                         strokeLinecap="round"
@@ -243,8 +245,8 @@ export const Dashboard = () => {
         </button>
       </div>
 
-      {/* 3. Mosaico Historial de Saldo (ahora con gráfico de líneas) */}
-      <div className="bg-[#395C6B] backdrop-blur-md rounded-2xl p-6 border border-white/10 shadow-lg hover:shadow-xl transition-all">
+      {/* 3. Mosaico Historial de Saldo */}
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Historial de saldo</h3>
           <svg
@@ -252,13 +254,13 @@ export const Dashboard = () => {
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
-            stroke="currentColor"
-            className="w-5 h-5 text-[#D1C219]"
+            stroke="#F9D71C"
+            className="w-5 h-5"
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
           </svg>
         </div>
-        <div className="h-64"> {/* Altura fija para el gráfico */}
+        <div className="h-64">
           <Line data={chartData} options={chartOptions} />
         </div>
       </div>
