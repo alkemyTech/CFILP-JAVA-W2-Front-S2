@@ -1,6 +1,7 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import CurrencyConverter from '../components/CurrencyConverter';
 
 ChartJS.register(
   CategoryScale,
@@ -104,10 +105,10 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
       {/* 1. Mosaico Saldo Actual */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 transition-transform duration-200">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-400">Saldo disponible</p>
@@ -116,9 +117,6 @@ export const Dashboard = () => {
           </div>
 
           <div className="p-3 rounded-full bg-blue-600/10">
-
-
-
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -158,7 +156,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 2. Mosaico Últimos Movimientos */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 transition-transform duration-200">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Últimos movimientos</h3>
           <svg
@@ -250,7 +248,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 3. Mosaico Historial de Saldo */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 transition-transform duration-200">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Historial de saldo</h3>
           <svg
@@ -268,7 +266,9 @@ export const Dashboard = () => {
           <Line data={chartData} options={chartOptions} />
         </div>
       </div>
+      <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-105 transition-transform duration-200"> 
+        <CurrencyConverter />
+      </div>
     </div>
-
   )
 };
