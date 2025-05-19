@@ -1,5 +1,7 @@
+import { useAuthStore } from '../../hooks';
 export const Aside = () => {
 
+    const { user, startLogOut } = useAuthStore();
 
     return (
         <aside className="fixed top-0 left-0 z-40 w-64 h-screen pt-14 transition-transform -translate-x-full bg-[#E9F1F7] border-r border-gray-200 md:translate-x-0 dark:bg-gray-800 dark:border-gray-700 flex flex-col justify-between shadow-[2px_0_6px_rgba(0,0,0,0.1)]" aria-label="Sidenav" id="drawer-navigation">
@@ -110,10 +112,10 @@ export const Aside = () => {
                             src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/avatars/michael-gough.png"
                             alt="user photo"
                         />
-                        <span className="ml-2 text-[#395C6B] dark:text-black">Usuario X</span>
+                        <span className="ml-2 text-[#395C6B] dark:text-black">{user.name}</span>
                     </button>
                     {/* Aquí puedes agregar el menú desplegable si lo necesitas */}
-                    <button className="focus:outline-none text-black bg-[#CFD11A] hover:bg-red-200 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                    <button className="focus:outline-none text-black bg-[#CFD11A] hover:bg-red-200 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900" onClick={startLogOut}>
                         <i className="fas fa-sign-out-alt"></i>
                         &nbsp;
                         <span>Salir</span>
