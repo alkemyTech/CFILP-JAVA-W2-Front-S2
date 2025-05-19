@@ -1,10 +1,46 @@
-import { Link } from "react-router"
+import { Link } from "react-router";
+import { useForm } from "../../hooks";
+import { useAuthStore } from "../../hooks/useAuthStore";
+import { useEffect } from "react";
+import Swal from "sweetalert2";
+
+const loginFormFields = {
+    username: '',
+    password: '',
+};
+
+
 
 export const LoginPage = () => {
+
+    const { startLogin, errorMessage } = useAuthStore();
+
+    //useForm Login
+    const {
+        username,
+        password,
+        onInputChange: onLoginInputChange,
+        onResetForm
+    } = useForm(loginFormFields);
+
+    // Login Submit
+    const loginSubmit = (e) => {
+        e.preventDefault();
+        startLogin({ username, password });
+        onResetForm();
+    }
+
+    // useEffect - errorMessage
+    useEffect(() => {
+        if (errorMessage !== undefined) {
+            Swal.fire('Error en la Autenticacion', errorMessage, 'error');
+        }
+    }, [errorMessage]);
+
     return (
         <section className="bg-[url(https://images.unsplash.com/photo-1742750989574-3412f440a0c4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] dark:bg-gray-900">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white hover:text-red-200">
+                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white hover:text-red-200">
                     <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
                     AlkyWallet
                 </a>
@@ -13,14 +49,29 @@ export const LoginPage = () => {
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Ingresa a tu cuenta
                         </h1>
-                        <form className="space-y-4 md:space-y-6" action="#">
+                        <form className="space-y-4 md:space-y-6" onSubmit={loginSubmit}>
                             <div>
                                 <label for="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
-                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" />
+                                <input
+                                    type="email"
+                                    name="username"
+                                    id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    value={username}
+                                    onChange={onLoginInputChange}
+                                    placeholder="name@company.com"
+                                    required="" />
                             </div>
                             <div>
                                 <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" />
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    placeholder="••••••••"
+                                    value={password}
+                                    onChange={onLoginInputChange}
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    required="" />
                             </div>
                             {/* <div className="flex items-center justify-between">
                                 <div className="flex items-start">

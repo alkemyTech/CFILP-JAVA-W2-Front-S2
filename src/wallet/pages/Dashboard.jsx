@@ -1,8 +1,12 @@
+import { useAuthStore } from "../../hooks";
 
 export const Dashboard = () => {
+
+    const { user } = useAuthStore();
+
     return (
         <div className="space-y-8">
-            <h2 className="text-4xl font-extrabold dark:text-black">Nombre Apellido del Usuario</h2>
+            <h2 className="text-4xl font-extrabold dark:text-black">Usuario: {user.name}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                 {/* Saldo actual de la cuenta principal */}
                 <div className="bg-white rounded-lg shadow p-6 flex flex-col justify-center items-center dark:bg-gray-800 hover:shadow-lg transition-shadow duration-300">
