@@ -49,13 +49,13 @@ export const RegisterPage = () => {
     }, [errorMessage]);
 
     return (
-        <section className="bg-[url(https://images.unsplash.com/photo-1742750989574-3412f440a0c4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] dark:bg-gray-900">
+        <section className="min-h-screen bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#2D3748] bg-cover bg-center">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white hover:text-red-200">
+                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-120">
                     <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
                     AlkyWallet
                 </a>
-                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                <div className="w-full bg-[#E9F1F7] rounded-2xl shadow-lg shadow-blue-900/10 max-w-md p-8 transition-all duration-300">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                             Registrar tu cuenta
@@ -71,7 +71,7 @@ export const RegisterPage = () => {
                                     placeholder="Pablo"
                                     value={nombre}
                                     onChange={onLoginInputChange}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A86FF] text-[#0D1B2A]"
                                     required />
                             </div>
                             {/* Apellido del usuario */}
@@ -84,7 +84,7 @@ export const RegisterPage = () => {
                                     placeholder="Aimar"
                                     value={apellido}
                                     onChange={onLoginInputChange}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A86FF] text-[#0D1B2A]"
                                     required />
                             </div>
                             {/* email input */}
@@ -96,7 +96,7 @@ export const RegisterPage = () => {
                                     id="email"
                                     value={email}
                                     onChange={onLoginInputChange}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A86FF] text-[#0D1B2A]"
                                     placeholder="name@company.com"
                                     required="" />
                             </div>
@@ -110,7 +110,7 @@ export const RegisterPage = () => {
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={onLoginInputChange}
-                                    className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3A86FF] text-[#0D1B2A]"
                                     required />
                             </div>
 
@@ -133,9 +133,11 @@ export const RegisterPage = () => {
                                 </div>
                                 <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                             </div> */}
-                            <button type="submit" className="w-full cursor-pointer text-black bg-red-100 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-s px-5 py-2.5 text-center dark:bg-primary-200 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Ingresar</button>
-                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-                                Tienes una cuenta? <Link to="/auth/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login</Link>
+                            <button type="submit" className="w-full bg-[#FFD166] hover:bg-[#FFC300] text-[#0D1B2A] font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">
+                            Registrarse
+                            </button>
+                            <p className="text-sm text-[#0D1B2A] text-center">
+                                    ¿Ya tienes una cuenta? <Link to="/auth/login" className="text-[#3A86FF] font-medium hover:underline">Inicia sesión</Link>
                             </p>
                         </form>
                     </div>
