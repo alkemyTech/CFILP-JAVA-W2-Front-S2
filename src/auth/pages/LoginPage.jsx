@@ -38,13 +38,13 @@ export const LoginPage = () => {
     }, [errorMessage]);
 
     return (
-        <section className="min-h-screen bg-[#2D3748] bg-cover bg-center dark:bg-gray-900">
+        <section className="min-h-screen bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#2D3748] bg-cover bg-center">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white hover:text-red-200">
+                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-120">
                     <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
                     AlkyWallet
                 </a>
-                <div className="w-full bg-[#E9F1F7] rounded-2xl shadow-md max-w-md p-8">
+                <div className="w-full bg-[#E9F1F7] rounded-2xl shadow-lg shadow-blue-900/10 max-w-md p-8 transition-all duration-300">
                     <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
                         <h1 className="text-2xl font-bold text-[#0D1B2A]">
                             Ingresa a tu cuenta
@@ -84,9 +84,9 @@ export const LoginPage = () => {
                                 </div>
                                 <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                             </div> */}
-                            <button type="submit" className="w-full bg-[#FFD166] hover:bg-[#FFC300] text-[#0D1B2A] font-semibold py-2 rounded-lg transition">Ingresar</button>
-                            <p className="text-[#3A86FF] hover:underline">
-                                Tienes una cuenta? <Link to="/auth/register" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Registrarse</Link>
+                            <button type="submit" className="w-full bg-[#FFD166] hover:bg-[#FFC300] text-[#0D1B2A] font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">Ingresar</button>
+                            <p className="text-sm text-[#0D1B2A] text-center">
+                                 ¿No tienes una cuenta? <Link to="/auth/register" className="text-[#3A86FF] font-medium hover:underline">Regístrate</Link>
                             </p>
                         </form>
                     </div>
