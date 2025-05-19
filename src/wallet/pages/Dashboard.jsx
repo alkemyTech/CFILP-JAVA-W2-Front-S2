@@ -76,8 +76,7 @@ export const Dashboard = () => {
           ].map((tx, index) => (
             <li key={index} className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${tx.type === 'income' ? 'bg-green-500/10' : 'bg-red-500/10'
-                  }`}>
+                <div className={`p-2 rounded-lg ${tx.type === 'income' ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
                   {tx.type === 'income' ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
