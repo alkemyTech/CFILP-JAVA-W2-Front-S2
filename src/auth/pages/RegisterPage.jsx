@@ -1,0 +1,67 @@
+import { Link } from "react-router"
+
+export const RegisterPage = () => {
+    return (
+        <section className="bg-[url(https://images.unsplash.com/photo-1742750989574-3412f440a0c4?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] dark:bg-gray-900">
+            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
+                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-gray-900 dark:text-white hover:text-red-200">
+                    <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
+                    AlkyWallet
+                </a>
+                <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
+                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
+                            Registrar tu cuenta
+                        </h1>
+                        <form className="space-y-4 md:space-y-6" action="#">
+                            {/* Nombre del usuario */}
+                            <div>
+                                <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                                <input type="text" name="name" id="name" placeholder="Pablo" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            </div>
+                            {/* Apellido del usuario */}
+                            <div>
+                                <label for="lastname" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Apellido</label>
+                                <input type="text" name="lastname" id="lastname" placeholder="Aimar" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required />
+                            </div>
+                            {/* email input */}
+                            <div>
+                                <label for="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                                <input type="email" name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="name@company.com" required="" />
+                            </div>
+                            {/* password input */}
+                            <div>
+                                <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                                <input type="password" name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required="" />
+                            </div>
+
+                            {/* Role del usuario */}
+                            {/* <label for="role" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo de Usuario</label>
+                            <select id="role" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option selected onSelect="">--Seleccion--</option>
+                                <option>ADMIN</option>
+                                <option>USER</option>
+                                <option>INVITED</option>
+                            </select> */}
+                            {/* <div className="flex items-center justify-between">
+                                <div className="flex items-start">
+                                    <div className="flex items-center h-5">
+                                        <input id="remember" aria-describedby="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800" required="" />
+                                    </div>
+                                    <div className="ml-3 text-sm">
+                                        <label for="remember" className="text-gray-500 dark:text-gray-300">Remember me</label>
+                                    </div>
+                                </div>
+                                <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
+                            </div> */}
+                            <button type="submit" className="w-full cursor-pointer text-black bg-red-100 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-s px-5 py-2.5 text-center dark:bg-primary-200 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Ingresar</button>
+                            <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                                Tienes una cuenta? <Link to="/auth/login" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Login</Link>
+                            </p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    )
+}
