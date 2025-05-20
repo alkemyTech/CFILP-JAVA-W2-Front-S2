@@ -52,18 +52,18 @@ export const Cards = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-visible">
       {tarjetas.map((tarjeta) => (
         <div
           key={tarjeta.id}
-          className={`${getCardStyles(tarjeta.tipo)} text-white p-6 rounded-2xl shadow-md hover:shadow-lg transition-all hover:scale-105 duration-200`}
+          className={`${getCardStyles(tarjeta.tipo)} text-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.03] duration-200`}
         >
-          <div className="flex justify-between items-center mb-4">
-            <div className="text-xl font-semibold">{tarjeta.tipo}</div>
+          <div className="flex justify-between items-center mb-3">
+            <div className="text-lg font-semibold">{tarjeta.tipo}</div>
             {getCardIcon(tarjeta.tipo)}
           </div>
-          <div className="text-lg font-mono tracking-widest">{tarjeta.numero}</div>
-          <div className="flex justify-between items-center mt-16 text-sm">
+          <div className="text-base font-mono tracking-widest">{tarjeta.numero}</div>
+          <div className="flex justify-between items-center mt-3 text-xs">
             <div>
               <div className="uppercase text-gray-200">Titular</div>
               <div>{tarjeta.titular}</div>
@@ -78,7 +78,7 @@ export const Cards = () => {
 
       {/* Botón para agregar nueva tarjeta */}
       <button
-        className="bg-[#2D3748] text-white border border-gray-600 rounded-2xl p-6 flex flex-col items-center justify-center hover:bg-gray-700 transition-all hover:scale-105 duration-200"
+        className="bg-[#2D3748] text-white border border-gray-600 rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-700 transition-all hover:scale-[1.02] duration-200 h-auto"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +86,7 @@ export const Cards = () => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-10 h-10 mb-2 text-blue-400"
+          className="w-8 h-8 mb-1 text-blue-400"
         >
           <path
             strokeLinecap="round"
