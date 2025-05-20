@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router';
 import { Layout } from "../layout/Layout";
-import { Accounts, Dashboard, Cards } from '../pages';
+import { Accounts, Dashboard, Cards, Deposit} from '../pages';
 
 
 export const WalletRouter = () => {
@@ -11,6 +11,7 @@ export const WalletRouter = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/accounts" element={<Accounts />} />
                     <Route path="/cards" element={<Cards />} />
+                    <Route path="/deposit" element={<Deposit />} />
                     <Route path="*" element={<Navigate to={"/"} />} />
                 </Routes>
             </Layout>

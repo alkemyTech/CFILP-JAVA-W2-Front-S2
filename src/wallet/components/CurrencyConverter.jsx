@@ -23,7 +23,7 @@ const CurrencyConverter = () => {
         const data = await response.json();
         if (data && data.currencies) {
           setCurrencies(Object.keys(data.currencies).sort()); // Ordenamos las monedas alfabéticamente
-        } else if (data && data.error) {
+        } else if (data.error && (data.error.info != undefined)) {
           setError(`Error al cargar monedas: ${data.error.info}`);
         } else {
           setError('No se pudieron cargar las monedas.');
