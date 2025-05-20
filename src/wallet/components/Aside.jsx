@@ -52,7 +52,7 @@ export const Aside = () => {
                         {/* Link to Cards */}
                         <li>
                             <Link
-                                to="/"
+                                to="/cards"
                                 className="flex items-center p-2 text-[#395C6B] font-medium text-gray-900 rounded-lg dark:text-white hover:bg-[#395C6B] hover:text-white dark:hover:bg-gray-700 group"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6" className="size-6 text-[#395C6B] group-hover:text-white transition-colors">
