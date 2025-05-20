@@ -86,7 +86,7 @@ export const Aside = () => {
                                 <span className="ml-3">Transferencias</span>
                             </Link>
                         </li>
-                        <li>
+                        {/*<li>
                             <Link
                                 to="/"
                                 className="flex items-center p-2 text-[#395C6B] font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-[#395C6B] hover:text-white dark:hover:bg-gray-700 dark:text-white group"
@@ -98,7 +98,7 @@ export const Aside = () => {
 
                                 <span className="ml-3">Saldo Almacenado</span>
                             </Link>
-                        </li>
+                        </li>*/}
                     </ul>
                 </div>
             </div>
