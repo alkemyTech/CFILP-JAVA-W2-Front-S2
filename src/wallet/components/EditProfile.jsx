@@ -88,9 +88,9 @@ const EditProfile = () => {
 
     return (
         <div className="flex justify-center items-start min-h-[calc(100vh-80px)] py-8 px-4">
-            <div className="bg-[#2D3748] text-white p-8 rounded-xl shadow-lg w-full max-w-5xl flex flex-col md:flex-row gap-8"> {/* Flex para columnas, md:flex-row para que sean columnas en desktop */}
+            <div className="bg-[#2D3748] text-white p-8 rounded-xl shadow-lg w-full max-w-5xl flex flex-col md:flex-row gap-8 items-end"> {/* Flex para columnas, md:flex-row para que sean columnas en desktop */}
                 {/* Columna Izquierda: Datos Personales */}
-                <div className="w-full md:w-1/2"> {/* Ocupa la mitad en desktop, completo en mobile */}
+                <div className="w-full md:w-1/2 flex flex-col justify-between"> {/* Ocupa la mitad en desktop, completo en mobile */}
                     <EditProfileForm
                         formValues={formValues}
                         handleInputChange={handleInputChange}
@@ -100,7 +100,7 @@ const EditProfile = () => {
                 </div>
 
                 {/* Columna Derecha: Cambio de Contraseña */}
-                <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l border-gray-700 md:pl-8 pt-8 md:pt-0"> {/* Borde separador y padding */}
+                <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l border-gray-700 md:pl-8 pt-8 md:pt-0 flex flex-col justify-between"> {/* Borde separador y padding */}
                     <ChangePasswordForm
                         passwordFields={passwordFields}
                         handlePasswordInputChange={handlePasswordInputChange}
