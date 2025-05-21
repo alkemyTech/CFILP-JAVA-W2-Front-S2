@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
+import Swal from "sweetalert2";
 import { useForm } from "../../hooks";
 import { useAuthStore } from "../../hooks/useAuthStore";
-import { useEffect } from "react";
-import Swal from "sweetalert2";
 
 const loginFormFields = {
     username: '',
@@ -32,7 +32,7 @@ export const LoginPage = () => {
 
     // useEffect - errorMessage
     useEffect(() => {
-        if (errorMessage !== undefined) {
+        if (errorMessage !== undefined && errorMessage !== null && errorMessage !== '') {
             Swal.fire('Error en la Autenticacion', errorMessage, 'error');
         }
     }, [errorMessage]);
@@ -40,7 +40,7 @@ export const LoginPage = () => {
     return (
         <section className="min-h-screen bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#2D3748] bg-cover bg-center">
             <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <a href="#" className="flex items-center mb-6 text-2xl font-semibold text-white dark:text-white font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-120">
+                <a href="#" className="flex items-center mb-6 text-4xl text-white dark:text-white font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-120">
                     <img className="w-8 h-8 mr-2" src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" />
                     AlkyWallet
                 </a>
@@ -86,7 +86,7 @@ export const LoginPage = () => {
                             </div> */}
                             <button type="submit" className="w-full bg-[linear-gradient(to_right,_#FF9A9E,_#F6416C)] hover:opacity-90 text-[#2D3748] font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">Ingresar</button>
                             <p className="text-sm text-[#0D1B2A] text-center">
-                                 ¿No tienes una cuenta? <Link to="/auth/register" className="text-[#3A86FF] font-medium hover:underline">Regístrate</Link>
+                                ¿No tienes una cuenta? <Link to="/auth/register" className="text-[#3A86FF] font-medium hover:underline">Regístrate</Link>
                             </p>
                         </form>
                     </div>

@@ -18,7 +18,7 @@ export const useAuthStore = () => {
 
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
-            dispatch(onLogin({ name: data.username, msg: data.message }));
+            dispatch(onLogin({ name: data.username, msg: data.message, id: data.id }));
 
         } catch (error) {
             dispatch(onLogOut('Credenciales incorrectas'));
@@ -40,7 +40,7 @@ export const useAuthStore = () => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
 
-            dispatch(onLogin({ name: data.username, msg: data.message }));
+            dispatch(onLogin({ name: data.username, msg: data.message, id: data.id }));
 
         } catch (error) {
             dispatch(onLogOut(error.response.data?.msg || 'Error creating user'));
@@ -58,10 +58,10 @@ export const useAuthStore = () => {
 
         try {
 
-            const { data } = await walletApi.get('/auth/renew');
+            const { data } = await walletApi.post('/auth/renew');
             localStorage.setItem('token', data.token);
             localStorage.setItem('token-init-date', new Date().getTime());
-            dispatch(onLogin({ uid: data.uid, name: data.name }));
+            dispatch(onLogin({ name: data.username, msg: data.message }));
 
         } catch (error) {
             localStorage.clear();
