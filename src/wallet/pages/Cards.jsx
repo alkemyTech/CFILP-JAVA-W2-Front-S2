@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
 import { FaCcVisa, FaCcMastercard, FaCreditCard } from 'react-icons/fa';
+import { Modal } from '../components/Modal'; // Ruta ajustada: sube un nivel, luego entra a 'components'
+import { AddCardForm } from '../components/AddCardForm'; // Ruta ajustada
 
 export const Cards = () => {
-  const tarjetas = [
+  const [tarjetas, setTarjetas] = useState([
     {
       id: 1,
       numero: '**** **** **** 1234',
@@ -23,7 +26,9 @@ export const Cards = () => {
       vencimiento: '01/30',
       tipo: 'Alkywallet',
     },
-  ];
+  ]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const getCardStyles = (tipo) => {
     switch (tipo) {
@@ -51,6 +56,17 @@ export const Cards = () => {
     }
   };
 
+  const handleAddCard = (newCardData) => {
+    const newCard = {
+      id: tarjetas.length + 1,
+      ...newCardData,
+      numero: `**** **** **** ${newCardData.numero.slice(-4)}`,
+      titular: newCardData.titular || 'Titular Desconocido',
+    };
+    setTarjetas([...tarjetas, newCard]);
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-visible">
       {tarjetas.map((tarjeta) => (
@@ -76,9 +92,9 @@ export const Cards = () => {
         </div>
       ))}
 
-      {/* Botón para agregar nueva tarjeta */}
       <button
         className="bg-[#2D3748] text-white border border-gray-600 rounded-xl p-4 flex flex-col items-center justify-center hover:bg-gray-700 transition-all hover:scale-[1.02] duration-200 h-auto"
+        onClick={() => setIsModalOpen(true)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +112,10 @@ export const Cards = () => {
         </svg>
         <span className="text-sm font-medium">Agregar nueva tarjeta</span>
       </button>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <AddCardForm onAddCard={handleAddCard} />
+      </Modal>
     </div>
   );
 };
