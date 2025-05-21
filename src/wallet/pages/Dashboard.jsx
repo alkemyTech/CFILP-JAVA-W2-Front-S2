@@ -108,7 +108,7 @@ export const Dashboard = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 overflow-visible">
 
       {/* 1. Mosaico Saldo Actual */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-102 transition-transform duration-200">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm font-medium text-gray-400">Saldo disponible</p>
@@ -156,7 +156,7 @@ export const Dashboard = () => {
       </div>
 
       {/* 2. Mosaico Historial de Saldo */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-102 transition-transform duration-200">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Historial de saldo</h3>
           <svg
@@ -175,7 +175,7 @@ export const Dashboard = () => {
         </div>
       </div>
       {/* 3. Mosaico Últimos Movimientos */}
-      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-102 transition-transform duration-200">
+      <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-white">Últimos movimientos</h3>
           <svg
@@ -265,7 +265,7 @@ export const Dashboard = () => {
           </svg>
         </button>
       </div>
-      <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-102 transition-transform duration-200"> 
+      <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200"> 
         <CurrencyConverter />
       </div>
     </div>
