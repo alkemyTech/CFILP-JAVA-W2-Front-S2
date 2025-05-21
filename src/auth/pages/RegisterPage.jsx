@@ -133,7 +133,7 @@ export const RegisterPage = () => {
                                 </div>
                                 <a href="#" className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500">Forgot password?</a>
                             </div> */}
-                            <button type="submit" className="w-full bg-[#FFD166] hover:bg-[#FFC300] text-[#0D1B2A] font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">
+                            <button type="submit" className="w-full bg-[linear-gradient(to_right,_#FF9A9E,_#F6416C)] hover:opacity-90 text-[#2D3748] font-semibold py-2 rounded-lg transition-all duration-300 hover:scale-105 shadow-md">
                             Registrarse
                             </button>
                             <p className="text-sm text-[#0D1B2A] text-center">
