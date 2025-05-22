@@ -51,7 +51,7 @@ export const LoginPage = () => {
                         </h1>
                         <form className="space-y-4 md:space-y-6" onSubmit={loginSubmit}>
                             <div>
-                                <label htmlFor="email" className="block mb-1 text-sm text-[#0D1B2A]">Email</label>
+                                <label for="email" className="block mb-1 text-sm text-[#0D1B2A]">Email</label>
                                 <input
                                     type="email"
                                     name="username"
@@ -62,7 +62,7 @@ export const LoginPage = () => {
                                     required="" />
                             </div>
                             <div>
-                                <label htmlForfor="password" className="block mb-1 text-sm text-[#0D1B2A]">Password</label>
+                                <label for="password" className="block mb-1 text-sm text-[#0D1B2A]">Password</label>
                                 <input
                                     type="password"
                                     name="password"
