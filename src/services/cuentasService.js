@@ -1,8 +1,16 @@
-import { useAuthStore } from "../hooks/useAuthStore"
+import { walletApi } from "../api";
 
-export const cuentasService = () => {
+export const cuentasService = {
 
-    const { user } = useAuthStore();
+    getAllActiveAccountsOfActiveUser: async (id) => {
+        try {
+            const { data } = await walletApi.get(`/cuentas/usuario/${id}/activas`);
+            console.log("cuentasService", data);
+            return Array.isArray(data) ? data : [];
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error fetching accounts');
+        }
+    },
 
 
-}
+};
