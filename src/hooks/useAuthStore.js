@@ -52,20 +52,16 @@ export const useAuthStore = () => {
     };
 
     //function to check the token
-    const checkAuthToken = async () => {
+    const checkAuthToken = () => {
+        dispatch(onChecking());
+
         const token = localStorage.getItem('token');
-        if (!token) dispatch(onLogOut('There is no token'));
-
-        try {
-
-            const { data } = await walletApi.post('/auth/renew');
-            localStorage.setItem('token', data.jwt);
-            localStorage.setItem('token-init-date', new Date().getTime());
-            dispatch(onLogin({ name: data.username, msg: data.message }));
-
-        } catch (error) {
+        if (token && token !== 'undefined' && token !== '' && user) {
+            const { id, name } = user;
+            dispatch(onLogin({ name, msg: '', id }));
+        } else {
+            dispatch(onLogOut());
             localStorage.clear();
-            dispatch(onLogOut('Invalid token'));
         }
     };
 

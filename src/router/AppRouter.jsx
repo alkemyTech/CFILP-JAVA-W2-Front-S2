@@ -14,8 +14,9 @@ export const AppRouter = () => {
 
     if (status === 'checking') {
         return (
-            <div className="flex justify-center items-center h-screen">
+            <div className="flex flex-col justify-center items-center h-screen backdrop-blur-sm bg-gradient-to-br from-[#0D1B2A] via-[#1B263B] to-[#2D3748]">
                 <img src="https://cdn-icons-png.flaticon.com/128/17215/17215810.png" alt="logo" className='w-20 h-20 animate-spin' />
+                <h1 className="text-2xl font-bold text-[#E9F1F7] ml-4">Cargando...</h1>
             </div>
         )
     }
