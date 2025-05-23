@@ -16,7 +16,7 @@ export const useAuthStore = () => {
         try {
             const { data } = await walletApi.post("/auth/login", { username, password });
 
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('token', data.jwt);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.username, msg: data.message, id: data.id }));
 
@@ -37,7 +37,7 @@ export const useAuthStore = () => {
         try {
             const { data } = await walletApi.post('/auth/register', { email, nombre, apellido, password, roleRequest: { roleListName: ['ADMIN'] } });
 
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('token', data.jwt);
             localStorage.setItem('token-init-date', new Date().getTime());
 
             dispatch(onLogin({ name: data.username, msg: data.message, id: data.id }));
@@ -59,7 +59,7 @@ export const useAuthStore = () => {
         try {
 
             const { data } = await walletApi.post('/auth/renew');
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('token', data.jwt);
             localStorage.setItem('token-init-date', new Date().getTime());
             dispatch(onLogin({ name: data.username, msg: data.message }));
 
