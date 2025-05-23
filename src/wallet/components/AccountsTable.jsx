@@ -1,3 +1,4 @@
+import { formatDateTime } from "../../utils/formatDateTime";
 
 export const AccountsTable = ({ onEdit, accounts }) => {
     // Verifica que accounts sea un array y no esté vacío
@@ -26,18 +27,15 @@ export const AccountsTable = ({ onEdit, accounts }) => {
                         <th className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
                             <div className="ps-3">
                                 <div className="text-base font-semibold">{account.cbu}</div>
-                                <div className="font-normal text-gray-500">{account.saldo}</div>
                             </div>
                         </th>
-                        <td className="px-6 py-4">{account.fechaApertura}</td>
-                        {/* <td className="px-6 py-4">
-                            27-09-1992
-                        </td> */}
+                        <td> <div className="font-normal text-gray-500">${account.saldo}</div></td>
+                        <td className="px-6 py-4">{formatDateTime(account.fechaApertura)}</td>
                         <td className="px-6 py-4">{account.moneda}</td>
                         <td className="px-6 py-4">
                             <div className="flex items-center">
                                 <div className={`h-2.5 w-2.5 rounded-full ${account.estado === true ? "bg-green-500" : "bg-red-500"} me-2`}></div>
-                                {account.estado}
+                                {(account.estado === true) ? "Activa" : "Inactiva"}
                             </div>
                         </td>
                         <td className="px-6 py-4">

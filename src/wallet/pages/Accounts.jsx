@@ -1,17 +1,14 @@
 import { useEffect, useState } from "react";
-import { cuentasService } from "../../services/cuentasService";
-import { AccountsTable } from "../components/AccountsTable";
-import { EditAccountModal } from "../components/EditAccountModal";
 import { useAuthStore } from "../../hooks";
-
+import { cuentasService } from "../../services/cuentasService";
+import { AccountsTable, EditAccountModal } from "../components";
 
 const initialAccounts = [];
 
-
 export const Accounts = () => {
     const [showModal, setShowModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
-    const [cuentas, setcuentas] = useState(initialAccounts);
+    const [selectedAccount, setSelectedAccount] = useState(null);
+    const [cuentas, setCuentas] = useState(initialAccounts);
 
     const { user } = useAuthStore();
 
@@ -22,7 +19,7 @@ export const Accounts = () => {
         const fetchAccounts = async () => {
             try {
                 const data = await cuentasService.getAllActiveAccountsOfActiveUser(user.id);
-                setcuentas(data);
+                setCuentas(data);
             } catch (error) {
                 console.error("Error fetching accounts:", error);
             }
@@ -30,21 +27,21 @@ export const Accounts = () => {
         fetchAccounts();
     }, [user.id]);
 
-    const handleEditUser = (user) => {
-        setSelectedUser(user);
+    const handleEditAccount = (account) => {
+        setSelectedAccount(account);
         setShowModal(true);
     };
 
     const handleCloseModal = () => {
         setShowModal(false);
-        setSelectedUser(null);
+        setSelectedAccount(null);
     };
     return (
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
             <h2 className="text-4xl mb-6">Cuentas</h2>
             {/* ...barra de acciones y búsqueda aquí... */}
-            <AccountsTable accounts={cuentas} onEdit={handleEditUser} />
-            <EditAccountModal show={showModal} user={selectedUser} onClose={handleCloseModal} />
+            <AccountsTable accounts={cuentas} onEdit={handleEditAccount} />
+            <EditAccountModal show={showModal} account={selectedAccount} onClose={handleCloseModal} />
         </div>
 
     );
