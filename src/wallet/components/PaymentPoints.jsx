@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { FaCopy, FaCheckCircle } from 'react-icons/fa';
+import { useState } from 'react';
+import { FaCheckCircle, FaCopy } from 'react-icons/fa';
 
-const PaymentPoints = () => {
+export const PaymentPoints = () => {
     const [codigo, setCodigo] = useState('');
     const [mostrarMapa, setMostrarMapa] = useState(false);
     const [copiado, setCopiado] = useState(false);
@@ -77,5 +77,3 @@ const PaymentPoints = () => {
         </div>
     );
 };
-
-export default PaymentPoints;
