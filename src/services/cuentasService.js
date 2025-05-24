@@ -11,4 +11,13 @@ export const cuentasService = {
         }
     },
 
+    createNewAccount: async (id) => {
+        try {
+            const { data } = await walletApi.post(`/cuentas/crear/${id}`);
+            return data;
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error creating account');
+        }
+    },
+
 };
