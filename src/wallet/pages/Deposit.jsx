@@ -1,7 +1,7 @@
-import PaymentPoints from "../components/PaymentPoints";
+import { PaymentPoints } from "../components/";
 
 export const Deposit = () => {
-     return (
+  return (
     <div className="p-8">
       <PaymentPoints />
     </div>
