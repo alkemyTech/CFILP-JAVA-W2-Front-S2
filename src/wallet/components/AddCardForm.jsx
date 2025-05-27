@@ -5,7 +5,7 @@ export const AddCardForm = ({ onAddCard }) => {
     numero: '',
     titular: '',
     vencimiento: '',
-    tipo: 'Visa', // Valor predeterminado
+    tipo: 'Visa',
   });
 
   const handleChange = (e) => {
@@ -97,10 +97,10 @@ export const AddCardForm = ({ onAddCard }) => {
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           required
         >
-          <option value="Visa">Visa</option>
-          <option value="Mastercard">Mastercard</option>
-          <option value="Alkywallet">Alkywallet</option>
-          <option value="Otra">Otra</option>
+          <option value="VISA">Visa</option>
+          <option value="MASTERCARD">Mastercard</option>
+          <option value="ALKYWALLET">Alkywallet</option>
+          <option value="OTRA">Otra</option>
         </select>
       </div>
 

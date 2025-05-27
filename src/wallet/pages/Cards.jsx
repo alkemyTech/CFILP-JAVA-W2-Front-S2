@@ -8,9 +8,7 @@ export const Cards = () => {
 
   const { accounts } = useAccountStore();
 
-  const tarjetas = accounts
-    .filter(account => account.estado === true)
-    .flatMap(account => account.tarjetasDto || []);
+  const tarjetas = accounts.flatMap(account => account.tarjetasDto || []);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,9 +51,9 @@ export const Cards = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-visible">
-      {tarjetas.map((tarjeta) => (
+      {tarjetas.map((tarjeta, idx) => (
         <div
-          key={tarjeta.id}
+          key={idx}
           className={`${getCardStyles(tarjeta.marca)} text-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.03] duration-200`}
         >
           <div className="flex justify-between items-center mb-3">
