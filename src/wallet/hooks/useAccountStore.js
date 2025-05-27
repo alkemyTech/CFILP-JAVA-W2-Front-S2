@@ -2,11 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { cuentasService } from "../../services/cuentasService";
 import {
     addAccount,
+    deleteAccount,
     setAccounts,
     setActiveAccount,
     setError,
     startLoadingAccounts
 } from "../../store/wallet/AccountSlice";
+import { data } from "react-router";
 
 export const useAccountStore = () => {
     const { accounts, activeAccount, isLoading, error } = useSelector((state) => state.account);
@@ -31,8 +33,15 @@ export const useAccountStore = () => {
     };
 
     // Function to add a new account
-    const addAccountImpl = (account) => {
-        dispatch(addAccount(account));
+    const addAccountImpl = (userId, TipoMoneda) => {
+
+        try {
+            const data = cuentasService.createNewAccount(userId, TipoMoneda);
+            dispatch(addAccount(data));
+        } catch (error) {
+            dispatch(setError(error.message));
+        }
+
     };
 
     // Function to update an existing account
@@ -41,7 +50,7 @@ export const useAccountStore = () => {
     };
 
     // Function to delete an account
-    const deleteAccount = (accountId) => {
+    const deleteActiveAccount = (accountId) => {
         dispatch(deleteAccount(accountId));
     };
 
@@ -56,6 +65,6 @@ export const useAccountStore = () => {
         selectActiveAccount,
         addAccountImpl,
         updateAccount,
-        deleteAccount,
+        deleteActiveAccount,
     };
 }
