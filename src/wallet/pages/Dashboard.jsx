@@ -1,7 +1,7 @@
-import React from 'react';
+import { CategoryScale, Chart as ChartJS, Filler, Legend, LinearScale, LineElement, PointElement, Title, Tooltip } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import CurrencyConverter from '../components/CurrencyConverter';
+import { useAccountStore } from '../hooks/useAccountStore';
 
 ChartJS.register(
   CategoryScale,
@@ -104,6 +104,42 @@ export const Dashboard = () => {
     },
   };
 
+  const { accounts } = useAccountStore();
+
+
+  // Calcula el saldo total de las cuentas en ARS
+  const saldoARS = accounts.reduce((total, account) => {
+    if (account.moneda === "ARS") {
+      return total + (parseFloat(account.saldo) || 0);
+    }
+    return total;
+  }, 0);
+
+  // Formatear el saldo ARS para mostrar como valor principal
+  const saldoARSFormateado = new Intl.NumberFormat('es-AR', {
+    style: 'currency',
+    currency: 'ARS'
+  }).format(saldoARS);
+
+
+  // Agrupar saldos por tipo de moneda
+  const saldosPorMoneda = accounts.reduce((acc, account) => {
+    // Extrae el tipo de moneda y asegura que sea string
+    const moneda = account.moneda || "ARS";
+    // Convierte el saldo a número
+    const saldo = parseFloat(account.saldo) || 0;
+
+    // Si ya existe la moneda, suma el saldo
+    if (acc[moneda]) {
+      acc[moneda] += saldo;
+    } else {
+      // Si no existe, inicializa con el saldo actual
+      acc[moneda] = saldo;
+    }
+
+    return acc;
+  }, {});
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 overflow-visible">
 
@@ -111,11 +147,34 @@ export const Dashboard = () => {
       <div className="bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-gray-400">Saldo disponible</p>
-            <p className="text-3xl font-bold text-white mt-2">$12,500.00</p>
+            <p className="text-sm font-medium text-gray-400">Saldo disponible en ARS</p>
+            <p className="text-3xl font-bold text-white mt-2">{saldoARSFormateado || "$0.00"}</p>
             <p className="text-xs text-gray-500 mt-1">Cuenta principal</p>
-          </div>
+            {/* Mostrar saldos por moneda */}
+            <div className="mt-2 space-y-1">
+              {Object.entries(saldosPorMoneda).map(([moneda, monto]) => {
+                // Formatea con el mismo estilo para todas las monedas
+                const montoFormateado = new Intl.NumberFormat('es-AR', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                }).format(monto);
 
+                // Define el símbolo según la moneda
+                let symbol = "";
+                if (moneda === "USD") symbol = "USD $";
+                else if (moneda === "EUR") symbol = "EUR €";
+                else if (moneda === "ARS") symbol = "ARS $";
+                else symbol = moneda + " ";
+
+                return (
+                  <p key={moneda} className="text-sm text-gray-300 font-medium">
+                    {symbol}{montoFormateado}
+                  </p>
+                );
+              })}
+            </div>
+            <p className="text-xs text-gray-500 mt-1">Total en todas las cuentas</p>
+          </div>
           <div className="p-3 rounded-full bg-blue-600/10">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +193,7 @@ export const Dashboard = () => {
         </div>
         <div className="mt-4 pt-4 border-t border-gray-700">
           <p className="text-sm text-green-400 flex items-center">
-            <svg
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -149,8 +208,8 @@ export const Dashboard = () => {
                 strokeLinejoin="round"
                 d="M4.5 10.5L12 3m0 0l7.5 7.5M12 3v18"
               />
-            </svg>
-            2.5% vs último mes
+            </svg> */}
+            {/* 2.5% vs último mes */}
           </p>
         </div>
       </div>
@@ -265,7 +324,7 @@ export const Dashboard = () => {
           </svg>
         </button>
       </div>
-      <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200"> 
+      <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
         <CurrencyConverter />
       </div>
     </div>
