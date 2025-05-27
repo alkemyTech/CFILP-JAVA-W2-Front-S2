@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuthStore } from "../../hooks";
 import { AccountsTable, EditAccountModal } from "../components";
 import { useAccountStore } from "../hooks/useAccountStore";
+import Swal from "sweetalert2";
 
 export const Accounts = () => {
     const [showModal, setShowModal] = useState(false);
@@ -11,7 +12,8 @@ export const Accounts = () => {
         isLoading,
         startLoadingUserAccounts,
         activeAccount,
-        selectActiveAccount
+        selectActiveAccount,
+        deleteActiveAccount
     } = useAccountStore();
 
     const { user } = useAuthStore();
@@ -19,7 +21,7 @@ export const Accounts = () => {
 
     useEffect(() => {
         startLoadingUserAccounts(user.id);
-    }, [user.id, accounts]);
+    }, [user.id]);
 
     const handleEditAccount = (account) => {
         selectActiveAccount(account);
@@ -34,6 +36,25 @@ export const Accounts = () => {
     const handleNewAccount = () => {
         selectActiveAccount(null);
         setShowModal(true);
+    };
+
+    const handleDeleteAccount = async (account) => {
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción eliminará la cuenta y sus tarjetas asociadas. ¿Deseas continuar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+
+        if (result.isConfirmed) {
+            await deleteActiveAccount(account.idCuenta);
+            Swal.fire('Eliminada', 'La cuenta ha sido eliminada.', 'success');
+        }
     };
 
     return (
@@ -54,13 +75,15 @@ export const Accounts = () => {
             </div>
             {/* ...barra de acciones y búsqueda aquí... */}
             {isLoading && <p>Cargando cuentas...</p>}
-            <AccountsTable accounts={accounts} onEdit={handleEditAccount} />
+            <AccountsTable
+                accounts={accounts}
+                onEdit={handleEditAccount}
+                onDelete={handleDeleteAccount} />
             <EditAccountModal
                 show={showModal}
                 account={activeAccount}
                 onClose={handleCloseModal}
-                userId={user.id}
-            />
+                userId={user.id} />
         </div>
 
     );
