@@ -20,4 +20,21 @@ export const cuentasService = {
         }
     },
 
+    updateAccount: async (id, account) => {
+        try {
+            const { data } = await walletApi.put(`/cuentas/actualizar/${id}`, account);
+            return data;
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error updating account');
+        }
+    },
+
+    deleteAccount: async (accountId) => {
+        try {
+            await walletApi.patch(`/cuentas/eliminar/${accountId}`);
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error deleting account');
+        }
+    }
+
 };
