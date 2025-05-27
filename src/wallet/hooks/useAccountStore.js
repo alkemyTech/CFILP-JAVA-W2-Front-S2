@@ -32,10 +32,9 @@ export const useAccountStore = () => {
     };
 
     // Function to add a new account
-    const addAccountImpl = (userId, TipoMoneda) => {
-
+    const addAccountImpl = async (userId, TipoMoneda) => {
         try {
-            const data = cuentasService.createNewAccount(userId, TipoMoneda);
+            const data = await cuentasService.createNewAccount(userId, TipoMoneda);
             dispatch(addAccount(data));
         } catch (error) {
             dispatch(setError(error.message));
@@ -49,9 +48,9 @@ export const useAccountStore = () => {
     };
 
     // Function to delete an account
-    const deleteActiveAccount = (accountId) => {
+    const deleteActiveAccount = async (accountId) => {
         try {
-            cuentasService.deleteAccount(accountId);
+            await cuentasService.deleteAccount(accountId);
             dispatch(deleteAccount(accountId));
         } catch (error) {
             dispatch(setError(error.message));

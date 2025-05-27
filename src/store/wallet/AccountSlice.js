@@ -36,11 +36,9 @@ export const AccountSlice = createSlice({
         },
         deleteAccount: (state, action) => {
             // Soft-delete: marca la cuenta como inactiva
-            state.accounts = state.accounts.map(acc =>
-                acc.id === action.payload ? { ...acc, estado: false } : acc
-            );
+            state.accounts = state.accounts.filter(acc => acc.idCuenta !== action.payload);
             // Si la cuenta eliminada es la activa, deselecciónala
-            if (state.activeAccount && state.activeAccount.id === action.payload) {
+            if (state.activeAccount && state.activeAccount.idCuenta === action.payload) {
                 state.activeAccount = null;
             }
         },
