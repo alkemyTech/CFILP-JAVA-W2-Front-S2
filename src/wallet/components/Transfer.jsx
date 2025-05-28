@@ -1,30 +1,58 @@
-import React, { useState } from 'react';
-// Importamos íconos que intentan coincidir con tu estilo visual
-// Probando con Ionicons (io5) que suelen tener un estilo más moderno y robusto
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'; // Importa useDispatch y useSelector
 import {
-    IoSwapHorizontalSharp, // Para la transferencia, una flecha de intercambio más robusta/angular
-    IoArrowForward,        // Para el botón de enviar, una flecha más sencilla
-    IoCheckmarkCircle,     // Para éxito, un check circular
-    IoWarning              // Para error, un signo de advertencia
-} from 'react-icons/io5'; // O podrías probar 'react-icons/md' si estos no te convencen
+    IoSwapHorizontalSharp,
+    IoArrowForward,
+    IoCheckmarkCircle,
+    IoWarning
+} from 'react-icons/io5';
+// Importa clearTransferMessage si aún lo usas, si no, puedes eliminarlo
+// import { clearTransferMessage } from '../store/wallet/AccountSlice'; // Solo si lo estás usando
 
 const Transfer = () => {
-    // Estado para los valores del formulario de transferencia
+    const dispatch = useDispatch(); // Necesario si usas `dispatch` para limpiar `transferMessage` del store
+
+    // Obtener las cuentas del store y el mensaje de transferencia (si aún lo manejas en el store)
+    const { accounts, transferMessage } = useSelector(state => state.account);
+
     const [transferDetails, setTransferDetails] = useState({
         recipientType: 'cbuAlias',
         cbuAlias: '',
         amount: '',
         description: ''
     });
-    const [message, setMessage] = useState(null); // Usamos null para indicar que no hay mensaje inicialmente
+    const [localMessage, setLocalMessage] = useState(null); // Usamos null para indicar que no hay mensaje inicialmente
     const [isSending, setIsSending] = useState(false);
 
-    // Simulación del saldo disponible del usuario
-    const availableBalance = 15000.00;
+    // ======================================================================
+    // CÁLCULO DEL SALDO DISPONIBLE EN ARS (igual que en el Dashboard)
+    const availableBalance = accounts.reduce((total, account) => {
+        if (account.moneda === "ARS") {
+            return total + (parseFloat(account.saldo) || 0);
+        }
+        return total;
+    }, 0);
+    // ======================================================================
+
+    // Este useEffect se encargará de limpiar los mensajes automáticamente
+    useEffect(() => {
+        // Limpiar mensajes locales después de 5 segundos
+        if (localMessage) {
+            const timer = setTimeout(() => setLocalMessage(null), 5000);
+            return () => clearTimeout(timer);
+        }
+        // Si también manejas un `transferMessage` en el store, y quieres limpiarlo aquí:
+        // if (transferMessage) {
+        //     const timer = setTimeout(() => dispatch(clearTransferMessage()), 5000);
+        //     return () => clearTimeout(timer);
+        // }
+    }, [localMessage, /* transferMessage, dispatch */]); // Descomenta transferMessage y dispatch si los usas
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setMessage(null); // Limpiar mensajes al cambiar cualquier campo
+        setLocalMessage(null); // Limpiar mensajes locales al cambiar cualquier campo
+        // Si manejas transferMessage en el store y quieres limpiarlo aquí:
+        // dispatch(clearTransferMessage());
         setTransferDetails({
             ...transferDetails,
             [name]: value
@@ -34,24 +62,26 @@ const Transfer = () => {
     const handleSubmitTransfer = async (e) => {
         e.preventDefault();
         setIsSending(true);
+        setLocalMessage(null); // Limpiar mensajes antes de iniciar la transferencia
 
         const { cbuAlias, amount, description } = transferDetails;
 
         if (!cbuAlias.trim() || !amount || !description.trim()) {
-            setMessage({ type: 'error', text: 'Todos los campos son obligatorios.' });
+            setLocalMessage({ type: 'error', text: 'Todos los campos son obligatorios.' });
             setIsSending(false);
             return;
         }
 
         const numericAmount = parseFloat(amount);
         if (isNaN(numericAmount) || numericAmount <= 0) {
-            setMessage({ type: 'error', text: 'El monto debe ser un número positivo.' });
+            setLocalMessage({ type: 'error', text: 'El monto debe ser un número positivo.' });
             setIsSending(false);
             return;
         }
 
+        // Validación de saldo usando el saldo real de Redux
         if (numericAmount > availableBalance) {
-            setMessage({ type: 'error', text: `Saldo insuficiente. Tienes $${availableBalance.toFixed(2)} disponibles.` });
+            setLocalMessage({ type: 'error', text: `Saldo insuficiente. Tienes $${availableBalance.toFixed(2)} disponibles.` });
             setIsSending(false);
             return;
         }
@@ -59,9 +89,11 @@ const Transfer = () => {
         console.log('Realizando transferencia:', transferDetails);
 
         try {
+            // Simulación de la llamada a la API (simulando un delay)
+            // Aquí iría tu lógica real para llamar al backend para hacer la transferencia.
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            setMessage({ type: 'success', text: '¡Transferencia realizada con éxito!' });
+            setLocalMessage({ type: 'success', text: '¡Transferencia realizada con éxito!' });
             setTransferDetails({
                 recipientType: 'cbuAlias',
                 cbuAlias: '',
@@ -71,18 +103,22 @@ const Transfer = () => {
 
         } catch (error) {
             console.error('Error al realizar la transferencia:', error);
-            setMessage({ type: 'error', text: 'Error al realizar la transferencia. Inténtalo de nuevo.' });
+            setLocalMessage({ type: 'error', text: 'Error al realizar la transferencia. Inténtalo de nuevo.' });
         } finally {
             setIsSending(false);
-            setTimeout(() => setMessage(null), 5000); // Ocultar mensaje después de 5 segundos
+            // El useEffect se encargará de limpiar el mensaje local.
+            // Si tienes un transferMessage en el store, asegúrate de que se limpie también.
         }
     };
+
+    // Determinar qué mensaje mostrar: el local tiene prioridad
+    const displayMessage = localMessage; // O localMessage || transferMessage si usas el store
 
     return (
         <div className="flex justify-center items-start min-h-[calc(100vh-80px)] py-8 px-4">
             <div className="bg-[#2D3748] text-white p-8 rounded-xl shadow-lg w-full max-w-xl">
                 <h2 className="text-3xl font-bold mb-8 text-center flex items-center justify-center gap-3">
-                    <IoSwapHorizontalSharp className="text-white text-[1.8rem]" /> {/* Ajustado tamaño de ícono de título */}
+                    <IoSwapHorizontalSharp className="text-white text-[1.8rem]" />
                     Realizar Transferencia
                 </h2>
 
@@ -146,10 +182,10 @@ const Transfer = () => {
                     </div>
 
                     {/* Mensaje de éxito/error */}
-                    {message && (
-                        <div className={`mt-4 p-3 rounded-lg text-center font-medium flex items-center justify-center gap-2 ${message.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-                            {message.type === 'success' ? <IoCheckmarkCircle size={20} /> : <IoWarning size={20} />} {/* Nuevos íconos para mensajes */}
-                            <span>{message.text}</span>
+                    {displayMessage && (
+                        <div className={`mt-4 p-3 rounded-lg text-center font-medium flex items-center justify-center gap-2 ${displayMessage.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+                            {displayMessage.type === 'success' ? <IoCheckmarkCircle size={20} /> : <IoWarning size={20} />}
+                            <span>{displayMessage.text}</span>
                         </div>
                     )}
 
@@ -157,7 +193,7 @@ const Transfer = () => {
                     <button
                         type="submit"
                         className={`w-full bg-[linear-gradient(to_right,_#FF9A9E,_#F6416C)] hover:opacity-90 text-[#2D3748] font-semibold py-3 rounded-lg transition-all duration-300 hover:scale-105 shadow-md flex items-center justify-center gap-2 mt-8
-                                   ${isSending ? 'opacity-60 cursor-not-allowed' : ''}`}
+                                    ${isSending ? 'opacity-60 cursor-not-allowed' : ''}`}
                         disabled={isSending}
                     >
                         {isSending ? (
@@ -167,7 +203,7 @@ const Transfer = () => {
                             </>
                         ) : (
                             <>
-                                <IoArrowForward className="text-[1.3rem]" /> {/* Nuevo ícono para el botón, ajustado el tamaño */}
+                                <IoArrowForward className="text-[1.3rem]" />
                                 Realizar Transferencia
                             </>
                         )}
