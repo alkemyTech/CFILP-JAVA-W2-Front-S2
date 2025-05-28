@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useAccountStore } from '../hooks/useAccountStore';
 
 export const AddCardForm = ({ onAddCard }) => {
+
+  const { accounts } = useAccountStore();
+
   const [formData, setFormData] = useState({
-    numero: '',
-    titular: '',
-    vencimiento: '',
-    tipo: 'Visa',
+    numeroTarjeta: '',
+    nombreTitular: '',
+    fechaVencimiento: '',
+    cvv: '',
+    banco: '',
+    marca: '',
+    tipo: '',
+    accountId: ''
   });
 
   const handleChange = (e) => {
@@ -18,16 +26,27 @@ export const AddCardForm = ({ onAddCard }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.numero || !formData.titular || !formData.vencimiento || !formData.tipo) {
+    if (!formData.numeroTarjeta ||
+      !formData.nombreTitular ||
+      !formData.fechaVencimiento ||
+      !formData.cvv ||
+      !formData.tipo ||
+      !formData.marca ||
+      !formData.accountId ||
+      !formData.banco) {
       alert('Por favor, complete todos los campos.');
       return;
     }
     onAddCard(formData);
     setFormData({
-      numero: '',
-      titular: '',
-      vencimiento: '',
-      tipo: 'Visa',
+      numeroTarjeta: '',
+      nombreTitular: '',
+      fechaVencimiento: '',
+      cvv: '',
+      banco: '',
+      marca: '',
+      tipo: '',
+      accountId: ''
     });
   };
 
@@ -36,14 +55,35 @@ export const AddCardForm = ({ onAddCard }) => {
       <h2 className="text-2xl font-bold text-gray-800 mb-4">Agregar Nueva Tarjeta</h2>
 
       <div>
-        <label htmlFor="numero" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="accountId" className="block text-sm font-medium text-gray-700">
+          Cuenta asociada
+        </label>
+        <select
+          id="accountId"
+          name="accountId"
+          value={formData.accountId}
+          onChange={handleChange}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          required
+        >
+          <option value="" selected>Seleccione una cuenta</option>
+          {accounts.map((account, idx) => (
+            <option key={idx} value={account.idCuenta}>
+              {account.moneda} - {account.cbu.substring(0, 8)}... (Saldo: {parseFloat(account.saldo).toLocaleString('es-AR')})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="numeroTarjeta" className="block text-sm font-medium text-gray-700">
           Número de Tarjeta
         </label>
         <input
           type="text"
-          id="numero"
-          name="numero"
-          value={formData.numero}
+          id="numeroTarjeta"
+          name="numeroTarjeta"
+          value={formData.numeroTarjeta}
           onChange={handleChange}
           maxLength="16"
           placeholder="Ej: 1234567890123456"
@@ -53,14 +93,14 @@ export const AddCardForm = ({ onAddCard }) => {
       </div>
 
       <div>
-        <label htmlFor="titular" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="nombreTitular" className="block text-sm font-medium text-gray-700">
           Titular
         </label>
         <input
           type="text"
-          id="titular"
-          name="titular"
-          value={formData.titular}
+          id="nombreTitular"
+          name="nombreTitular"
+          value={formData.nombreTitular}
           onChange={handleChange}
           placeholder="Nombre del Titular"
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -69,17 +109,49 @@ export const AddCardForm = ({ onAddCard }) => {
       </div>
 
       <div>
-        <label htmlFor="vencimiento" className="block text-sm font-medium text-gray-700">
-          Fecha de Vencimiento (MM/AA)
+        <label htmlFor="banco" className="block text-sm font-medium text-gray-700">
+          Banco
         </label>
         <input
           type="text"
-          id="vencimiento"
-          name="vencimiento"
-          value={formData.vencimiento}
+          id="banco"
+          name="banco"
+          value={formData.banco}
           onChange={handleChange}
-          maxLength="5"
+          placeholder="banco"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="fechaVencimiento" className="block text-sm font-medium text-gray-700">
+          Fecha de Vencimiento (YYY-MM-DD)
+        </label>
+        <input
+          type="text"
+          id="fechaVencimiento"
+          name="fechaVencimiento"
+          value={formData.fechaVencimiento}
+          onChange={handleChange}
           placeholder="MM/AA"
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          required
+        />
+      </div>
+
+      <div>
+        <label htmlFor="cvv" className="block text-sm font-medium text-gray-700">
+          CVV
+        </label>
+        <input
+          type="text"
+          id="cvv"
+          name="cvv"
+          value={formData.cvv}
+          onChange={handleChange}
+          maxLength="3"
+          placeholder="***"
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           required
         />
@@ -97,6 +169,27 @@ export const AddCardForm = ({ onAddCard }) => {
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           required
         >
+          <option value="">Seleccione un Tipo</option>
+          <option value="CREDITO">Credito</option>
+          <option value="DEBITO">Debito</option>
+          <option value="ALKYWALLET">Alkywallet</option>
+          <option value="OTRA">Otra</option>
+        </select>
+      </div>
+
+      <div>
+        <label htmlFor="marca" className="block text-sm font-medium text-gray-700">
+          Marca de Tarjeta
+        </label>
+        <select
+          id="marca"
+          name="marca"
+          value={formData.marca}
+          onChange={handleChange}
+          className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          required
+        >
+          <option value="">Seleccione una marca</option>
           <option value="VISA">Visa</option>
           <option value="MASTERCARD">Mastercard</option>
           <option value="ALKYWALLET">Alkywallet</option>

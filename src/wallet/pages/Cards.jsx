@@ -6,7 +6,7 @@ import { useAccountStore } from '../hooks/useAccountStore';
 
 export const Cards = () => {
 
-  const { accounts } = useAccountStore();
+  const { accounts, addCardToAccountFn } = useAccountStore();
 
   const tarjetas = accounts.flatMap(account => account.tarjetasDto || []);
 
@@ -38,15 +38,32 @@ export const Cards = () => {
     }
   };
 
-  const handleAddCard = (newCardData) => {
-    const newCard = {
-      id: tarjetas.length + 1,
-      ...newCardData,
-      numero: `**** **** **** ${newCardData.numero.slice(-4)}`,
-      titular: newCardData.titular || 'Titular Desconocido',
-    };
-    // setTarjetas([...tarjetas, newCard]);
-    setIsModalOpen(false);
+  const handleAddCard = async (newCardData) => {
+    try {
+      // Extraer el accountId antes de enviar al backend
+      const { accountId, ...cardData } = newCardData;
+
+      // Asegurarse de que la fecha tenga formato correcto (YYYY-MM-DD)
+      // Si la fecha viene como MM/YY, convertirla a YYYY-MM-DD
+      let fechaVencimiento = cardData.fechaVencimiento;
+      if (fechaVencimiento.includes('/')) {
+        const [mes, año] = fechaVencimiento.split('/');
+        const añoCompleto = `20${año}`; // Asumiendo que es 20XX
+        fechaVencimiento = `${añoCompleto}-${mes}-01`; // Usar el primer día del mes
+      }
+
+      // Crear la tarjeta con el formato esperado por el backend
+      const newCard = {
+        ...cardData,
+        fechaVencimiento,
+      };
+
+      await addCardToAccountFn(accountId, newCard);
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error al agregar tarjeta:", error);
+      alert("No se pudo agregar la tarjeta. Intente nuevamente.");
+    }
   };
 
   return (

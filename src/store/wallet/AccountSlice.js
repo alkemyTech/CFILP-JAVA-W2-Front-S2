@@ -50,7 +50,7 @@ export const AccountSlice = createSlice({
         addCardToAccount: (state, action) => {
             const { accountId, card } = action.payload;
             state.accounts = state.accounts.map(acc =>
-                acc.id === accountId
+                acc.idCuenta === accountId
                     ? { ...acc, tarjetas: [...(acc.tarjetas || []), card] }
                     : acc
             );

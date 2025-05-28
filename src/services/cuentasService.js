@@ -35,6 +35,15 @@ export const cuentasService = {
         } catch (error) {
             throw new Error(error.response?.data?.message || 'Error deleting account');
         }
+    },
+
+    addCardToAccount: async (accountId, newCard) => {
+        try {
+            const { data } = await walletApi.post(`/tarjetas/crear/${accountId}`, newCard);
+            return data;
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error adding card to account');
+        }
     }
 
 };

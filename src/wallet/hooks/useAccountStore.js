@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cuentasService } from "../../services/cuentasService";
 import {
     addAccount,
+    addCardToAccount,
     deleteAccount,
     setAccounts,
     setActiveAccount,
@@ -58,6 +59,19 @@ export const useAccountStore = () => {
 
     };
 
+    const addCardToAccountFn = async (accountId, newCard) => {
+        try {
+            // Primero, hacer la llamada a la API para crear la tarjeta
+            const data = await cuentasService.addCardToAccount(accountId, newCard);
+
+            // Luego, actualizar el estado en Redux
+            dispatch(addCardToAccount({ accountId, card: data }));
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error; // Re-lanzar el error para manejarlo en el componente
+        }
+    };
+
     return {
         //Properties
         accounts,
@@ -70,5 +84,6 @@ export const useAccountStore = () => {
         addAccountImpl,
         updateAccount,
         deleteActiveAccount,
+        addCardToAccountFn
     };
 }
