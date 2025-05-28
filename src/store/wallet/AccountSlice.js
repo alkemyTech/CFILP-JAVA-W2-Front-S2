@@ -57,11 +57,17 @@ export const AccountSlice = createSlice({
         },
         removeCardFromAccount: (state, action) => {
             const { accountId, cardId } = action.payload;
-            state.accounts = state.accounts.map(acc =>
-                acc.id === accountId
-                    ? { ...acc, tarjetas: acc.tarjetas.filter(card => card.id !== cardId) }
-                    : acc
-            );
+            state.accounts = state.accounts.map(acc => {
+                if (acc.id === accountId) {
+                    return {
+                        ...acc,
+                        // *** CAMBIA ESTO: acc.tarjetas ***
+                        // *** POR ESTO: acc.tarjetasDto ***
+                        tarjetasDto: (acc.tarjetasDto || []).filter(card => card.id !== cardId)
+                    };
+                }
+                return acc;
+            });
         },
     }
 });
