@@ -1,58 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux'; // Importa useDispatch y useSelector
+import { useDispatch, useSelector } from 'react-redux';
 import {
     IoSwapHorizontalSharp,
     IoArrowForward,
     IoCheckmarkCircle,
     IoWarning
 } from 'react-icons/io5';
-// Importa clearTransferMessage si aún lo usas, si no, puedes eliminarlo
-// import { clearTransferMessage } from '../store/wallet/AccountSlice'; // Solo si lo estás usando
 
 const Transfer = () => {
-    const dispatch = useDispatch(); // Necesario si usas `dispatch` para limpiar `transferMessage` del store
-
-    // Obtener las cuentas del store y el mensaje de transferencia (si aún lo manejas en el store)
+    const dispatch = useDispatch();
     const { accounts, transferMessage } = useSelector(state => state.account);
 
     const [transferDetails, setTransferDetails] = useState({
         recipientType: 'cbuAlias',
         cbuAlias: '',
         amount: '',
-        description: ''
+        description: '',
+        sourceCardId: '', // Estado para la tarjeta seleccionada
     });
-    const [localMessage, setLocalMessage] = useState(null); // Usamos null para indicar que no hay mensaje inicialmente
+    const [localMessage, setLocalMessage] = useState(null);
     const [isSending, setIsSending] = useState(false);
 
-    // ======================================================================
-    // CÁLCULO DEL SALDO DISPONIBLE EN ARS (igual que en el Dashboard)
-    const availableBalance = accounts.reduce((total, account) => {
-        if (account.moneda === "ARS") {
-            return total + (parseFloat(account.saldo) || 0);
-        }
-        return total;
-    }, 0);
-    // ======================================================================
+    // Aplanar todas las tarjetas de todas las cuentas y asociarlas con su accountId y saldo
+    // ¡Cambiado para usar 'tarjetasDto'!
+    const allCards = accounts.flatMap(account =>
+        (account.tarjetasDto || []).map(card => ({ // *** AHORA SE BUSCA 'tarjetasDto' ***
+            ...card,
+            accountId: account.id,
+            accountMoneda: account.moneda,
+            accountSaldo: parseFloat(account.saldo) || 0
+        }))
+    );
 
-    // Este useEffect se encargará de limpiar los mensajes automáticamente
+    // Encontrar la tarjeta seleccionada por el usuario
+    const selectedCard = allCards.find(card => card.id === transferDetails.sourceCardId);
+
+    // Determinar el saldo disponible
+    const availableBalance = selectedCard && selectedCard.accountMoneda === 'ARS'
+        ? selectedCard.accountSaldo
+        : 0;
+
     useEffect(() => {
-        // Limpiar mensajes locales después de 5 segundos
         if (localMessage) {
             const timer = setTimeout(() => setLocalMessage(null), 5000);
             return () => clearTimeout(timer);
         }
-        // Si también manejas un `transferMessage` en el store, y quieres limpiarlo aquí:
-        // if (transferMessage) {
-        //     const timer = setTimeout(() => dispatch(clearTransferMessage()), 5000);
-        //     return () => clearTimeout(timer);
-        // }
-    }, [localMessage, /* transferMessage, dispatch */]); // Descomenta transferMessage y dispatch si los usas
+    }, [localMessage]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setLocalMessage(null); // Limpiar mensajes locales al cambiar cualquier campo
-        // Si manejas transferMessage en el store y quieres limpiarlo aquí:
-        // dispatch(clearTransferMessage());
+        setLocalMessage(null);
         setTransferDetails({
             ...transferDetails,
             [name]: value
@@ -62,12 +59,13 @@ const Transfer = () => {
     const handleSubmitTransfer = async (e) => {
         e.preventDefault();
         setIsSending(true);
-        setLocalMessage(null); // Limpiar mensajes antes de iniciar la transferencia
+        setLocalMessage(null);
 
-        const { cbuAlias, amount, description } = transferDetails;
+        const { cbuAlias, amount, description, sourceCardId } = transferDetails;
 
-        if (!cbuAlias.trim() || !amount || !description.trim()) {
-            setLocalMessage({ type: 'error', text: 'Todos los campos son obligatorios.' });
+        // Validaciones
+        if (!cbuAlias.trim() || !amount || !description.trim() || !sourceCardId) {
+            setLocalMessage({ type: 'error', text: 'Todos los campos y la tarjeta de origen son obligatorios.' });
             setIsSending(false);
             return;
         }
@@ -79,18 +77,15 @@ const Transfer = () => {
             return;
         }
 
-        // Validación de saldo usando el saldo real de Redux
         if (numericAmount > availableBalance) {
-            setLocalMessage({ type: 'error', text: `Saldo insuficiente. Tienes $${availableBalance.toFixed(2)} disponibles.` });
+            setLocalMessage({ type: 'error', text: `Saldo insuficiente en la cuenta de la tarjeta. Tienes $${availableBalance.toFixed(2)} disponibles.` });
             setIsSending(false);
             return;
         }
 
-        console.log('Realizando transferencia:', transferDetails);
+        console.log('Realizando transferencia desde tarjeta:', sourceCardId, 'Detalles:', transferDetails);
 
         try {
-            // Simulación de la llamada a la API (simulando un delay)
-            // Aquí iría tu lógica real para llamar al backend para hacer la transferencia.
             await new Promise(resolve => setTimeout(resolve, 2000));
 
             setLocalMessage({ type: 'success', text: '¡Transferencia realizada con éxito!' });
@@ -98,7 +93,8 @@ const Transfer = () => {
                 recipientType: 'cbuAlias',
                 cbuAlias: '',
                 amount: '',
-                description: ''
+                description: '',
+                sourceCardId: '',
             });
 
         } catch (error) {
@@ -106,13 +102,10 @@ const Transfer = () => {
             setLocalMessage({ type: 'error', text: 'Error al realizar la transferencia. Inténtalo de nuevo.' });
         } finally {
             setIsSending(false);
-            // El useEffect se encargará de limpiar el mensaje local.
-            // Si tienes un transferMessage en el store, asegúrate de que se limpie también.
         }
     };
 
-    // Determinar qué mensaje mostrar: el local tiene prioridad
-    const displayMessage = localMessage; // O localMessage || transferMessage si usas el store
+    const displayMessage = localMessage;
 
     return (
         <div className="flex justify-center items-start min-h-[calc(100vh-80px)] py-8 px-4">
@@ -123,7 +116,11 @@ const Transfer = () => {
                 </h2>
 
                 <div className="text-lg text-center mb-6 py-3 px-4 rounded-lg bg-gray-700">
-                    <p className="font-semibold">Saldo Disponible: <span className="text-green-400">${availableBalance.toFixed(2)}</span></p>
+                    <p className="font-semibold">
+                        Saldo Disponible: <span className="text-green-400">${availableBalance.toFixed(2)}</span>
+                        {/* Mostrar el tipo y los últimos 4 dígitos de la tarjeta si hay una seleccionada */}
+                        {selectedCard && ` (de ${selectedCard.tipo} ${selectedCard.numero.slice(-4)})`}
+                    </p>
                 </div>
 
                 <form onSubmit={handleSubmitTransfer} className="space-y-6">
@@ -142,6 +139,34 @@ const Transfer = () => {
                             placeholder="Ej: 0000000000000000000000 / mi.alias.personal"
                             required
                         />
+                    </div>
+
+                    {/* Selector de Tarjeta de Origen */}
+                    <div>
+                        <label htmlFor="sourceCardId" className="block text-lg font-medium mb-2 text-gray-300">
+                            Seleccionar Tarjeta de Origen
+                        </label>
+                        <select
+                            id="sourceCardId"
+                            name="sourceCardId"
+                            value={transferDetails.sourceCardId}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                            required
+                        >
+                            <option value="">Selecciona una tarjeta...</option>
+                            {allCards.map(card => (
+                                <option key={card.id} value={card.id}>
+                                    {/* Aquí también mostramos la marca de la tarjeta si es relevante */}
+                                    {`${card.banco} - ${card.tipo} <span class="math-inline">\{card\.numero\.slice\(\-4\)\} \(</span>{card.marca || 'N/A'}) (Cuenta ${card.accountMoneda})`}
+                                </option>
+                            ))}
+                        </select>
+                        {allCards.length === 0 && (
+                            <p className="text-sm text-gray-500 mt-2 text-red-400">
+                                No se encontraron tarjetas asociadas a tus cuentas.
+                            </p>
+                        )}
                     </div>
 
                     {/* Campo Monto */}
