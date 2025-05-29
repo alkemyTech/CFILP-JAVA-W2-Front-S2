@@ -65,7 +65,7 @@ export const Accounts = () => {
                 <button
                     type="button"
                     onClick={handleNewAccount}
-                    className="flex items-center gap-2 bg-gradient-to-r from-[#3A86FF] to-[#4361EE] text-white font-semibold px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-all duration-200"
+                    className="flex items-center gap-2 bg-[linear-gradient(to_right,_#FF9A9E,_#F6416C)] text-[#2D3748] font-semibold px-5 py-2 rounded-lg shadow-md hover:scale-105 transition-all duration-200"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
