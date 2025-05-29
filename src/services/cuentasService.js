@@ -29,7 +29,7 @@ export const cuentasService = {
         }
     },
 
-    deleteAccount: async (accountId) => {
+    softDeleteAccount: async (accountId) => {
         try {
             await walletApi.patch(`/cuentas/eliminar/${accountId}`);
         } catch (error) {
@@ -43,6 +43,14 @@ export const cuentasService = {
             return data;
         } catch (error) {
             throw new Error(error.response?.data?.message || 'Error adding card to account');
+        }
+    },
+
+    deleteCardFromAccount: async (cardId) => {
+        try {
+            await walletApi.patch(`/tarjetas/eliminar/${parseInt(cardId)}`);
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error deleting card from account');
         }
     }
 

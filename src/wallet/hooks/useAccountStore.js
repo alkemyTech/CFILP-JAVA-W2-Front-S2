@@ -4,6 +4,7 @@ import {
     addAccount,
     addCardToAccount,
     deleteAccount,
+    removeCardFromAccount,
     setAccounts,
     setActiveAccount,
     setError,
@@ -51,7 +52,7 @@ export const useAccountStore = () => {
     // Function to delete an account
     const deleteActiveAccount = async (accountId) => {
         try {
-            await cuentasService.deleteAccount(accountId);
+            await cuentasService.softDeleteAccount(accountId);
             dispatch(deleteAccount(accountId));
         } catch (error) {
             dispatch(setError(error.message));
@@ -72,6 +73,19 @@ export const useAccountStore = () => {
         }
     };
 
+    const deleteCardFromAccount = async (cardId) => {
+        try {
+            await cuentasService.deleteCardFromAccount(cardId);
+
+            dispatch(removeCardFromAccount(cardId));
+
+            return true;
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error;
+        }
+    };
+
     return {
         //Properties
         accounts,
@@ -84,6 +98,7 @@ export const useAccountStore = () => {
         addAccountImpl,
         updateAccount,
         deleteActiveAccount,
-        addCardToAccountFn
+        addCardToAccountFn,
+        deleteCardFromAccount
     };
 }

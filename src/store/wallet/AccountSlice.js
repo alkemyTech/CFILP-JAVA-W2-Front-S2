@@ -46,34 +46,36 @@ export const AccountSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
         },
-        // Opcional: para manejar tarjetas asociadas a una cuenta
+
         addCardToAccount: (state, action) => {
             const { accountId, card } = action.payload;
+            console.log("Añadiendo tarjeta:", card, "a cuenta:", accountId);
             state.accounts = state.accounts.map(acc =>
                 acc.idCuenta === accountId
-                    ? { ...acc, tarjetas: [...(acc.tarjetas || []), card] }
+                    ? { ...acc, tarjetasDto: [...(acc.tarjetasDto || []), card] }
                     : acc
             );
         },
         removeCardFromAccount: (state, action) => {
-            const { accountId, cardId } = action.payload;
-            state.accounts = state.accounts.map(acc => {
-                if (acc.id === accountId) {
+            const cardId = action.payload;
+
+            // Actualizar todas las cuentas que puedan contener la tarjeta
+            state.accounts = state.accounts.map(account => {
+                // Si la cuenta tiene tarjetas, filtrar la que se eliminó
+                if (account.tarjetasDto && account.tarjetasDto.length > 0) {
                     return {
-                        ...acc,
-                        // *** CAMBIA ESTO: acc.tarjetas ***
-                        // *** POR ESTO: acc.tarjetasDto ***
-                        tarjetasDto: (acc.tarjetasDto || []).filter(card => card.id !== cardId)
+                        ...account,
+                        tarjetasDto: account.tarjetasDto.filter(card => card.id !== cardId)
                     };
                 }
-                return acc;
+                return account;
             });
-        },
+        }
     }
 });
 
 
-// Action creators are generated for each case reducer function
+
 export const {
     startLoadingAccounts,
     setAccounts,

@@ -1,23 +1,19 @@
 import { useState } from 'react';
 import { FaCcMastercard, FaCcVisa, FaCreditCard } from 'react-icons/fa';
+import { MdDeleteForever } from "react-icons/md";
+import Swal from 'sweetalert2';
 import { AddCardForm } from '../components/AddCardForm';
 import { Modal } from '../components/Modal';
-import { useDispatch, useSelector } from 'react-redux';
-import { removeCardFromAccount, addCardToAccount } from '../../store/wallet/AccountSlice';
-import { MdDeleteForever } from "react-icons/md";
+import { useAccountStore } from '../hooks/useAccountStore';
 
 export const Cards = () => {
 
-  const dispatch = useDispatch();
-  const { accounts } = useSelector(state => state.account); // Obtener las cuentas del store
+  const { accounts, addCardToAccountFn, deleteCardFromAccount } = useAccountStore();
 
-  
-  const tarjetas = accounts.flatMap(account =>
-        (account.tarjetasDto || []).map(card => ({
-            ...card,
-            accountId: account.id
-        }))
-    );
+  const tarjetas = accounts
+    .flatMap(account => account.tarjetasDto
+      .filter(t => t.estado === true) || []);
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -46,14 +42,42 @@ export const Cards = () => {
         return <FaCreditCard className="w-8 h-8 text-white" />;
     }
   };
-  const handleDeleteCard = (cardId, accountId) => {
-    const confirmDelete = window.confirm("¿Estás seguro de que quieres eliminar esta tarjeta?");
-    if (confirmDelete) {
-      dispatch(removeCardFromAccount({ accountId, cardId })); // Despachar la acción de Redux
-      alert("Tarjeta eliminada correctamente (solo en frontend).");
-    }
-  };
 
+
+  const handleDeleteCard = async (tarjeta) => {
+    try {
+      // Si es tarjeta de ALKYWALLET, mostrar mensaje y no continuar
+      if (tarjeta.marca === 'ALKYWALLET') {
+        Swal.fire({
+          title: 'Tarjeta AlkyWallet',
+          text: "Esta tarjeta no se puede eliminar. Puedes desactivarla desde la configuración de tu cuenta.",
+          icon: 'info',
+          confirmButtonText: 'Aceptar'
+        });
+        return;
+      }
+
+      // Para cualquier otra tarjeta, pedir confirmación
+      const result = await Swal.fire({
+        title: 'Confirmar eliminación',
+        text: "¿Estás seguro de que quieres eliminar esta tarjeta? Con esta acción no podrás volver a usarla, y perderás el acceso a las transacciones asociadas.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
+        await deleteCardFromAccount(tarjeta.idTarjeta);
+        Swal.fire('Eliminada', 'La tarjeta ha sido eliminada.', 'success');
+      }
+    } catch (error) {
+      console.error("Error al eliminar tarjeta:", error);
+      Swal.fire('Error', 'No se pudo eliminar la tarjeta.', 'error');
+    }
+  };
   const handleAddCard = async (newCardData) => {
     try {
       // Extraer el accountId antes de enviar al backend
@@ -74,8 +98,7 @@ export const Cards = () => {
         fechaVencimiento,
       };
 
-      const newCardId = Date.now().toString();
-      dispatch(addCardToAccount({ accountId, card: { id: newCardId, ...newCard } }));
+      await addCardToAccountFn(accountId, newCard);
       setIsModalOpen(false);
     } catch (error) {
       console.error("Error al agregar tarjeta:", error);
@@ -87,9 +110,9 @@ export const Cards = () => {
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-visible">
       {tarjetas.map((tarjeta, idx) => (
         <div
-          key={tarjeta.id} // AGREGAR: Usa el ID de la tarjeta como key, es más estable
-          className={`${getCardStyles(tarjeta.marca)} text-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.03] duration-200 relative group`} // AGREGAR: 'relative' para posicionar el botón de eliminar
-        >
+          key={idx}
+          className={`${getCardStyles(tarjeta.marca)} text-white p-4 rounded-xl shadow-md hover:shadow-lg transition-all hover:scale-[1.03] duration-200 relative group`} // AGREGAR: 'relative' para posicionar el botón de eliminar
+        >
           <div className="flex justify-between items-center mb-3">
             <div className="text-lg font-semibold">{tarjeta.marca}</div>
             {getCardIcon(tarjeta.marca)}
@@ -106,12 +129,12 @@ export const Cards = () => {
             </div>
           </div>
           <button
-            onClick={() => handleDeleteCard(tarjeta.id, tarjeta.accountId)}
-            className="absolute top-3 right-3 p-1 rounded-full bg-white bg-opacity-30 backdrop-filter backdrop-blur-sm border border-transparent text-red-500 opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-300 ease-in-out transform flex items-center justify-center"
-            title="Eliminar tarjeta"
-          >
-            <MdDeleteForever className="w-6 h-6" />
-          </button>
+            onClick={() => handleDeleteCard(tarjeta)}
+            className="absolute top-3 right-3 p-1 rounded-full bg-white bg-opacity-30 backdrop-filter backdrop-blur-sm border border-transparent text-red-500 opacity-0 group-hover:opacity-100 hover:scale-110 transition-all duration-300 ease-in-out transform flex items-center justify-center"
+            title="Eliminar tarjeta"
+          >
+            <MdDeleteForever className="w-6 h-6" />
+          </button>
         </div>
       ))}
 
