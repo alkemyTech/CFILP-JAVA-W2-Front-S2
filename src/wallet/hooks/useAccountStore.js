@@ -86,6 +86,17 @@ export const useAccountStore = () => {
         }
     };
 
+    const addTransactionToCard = async (tarjetaId, transferencia) => {
+        try {
+            const data = await cuentasService.addTransactionToCard(tarjetaId, transferencia);
+            dispatch(addTransactionToCard({ tarjetaId, transferencia: data }));
+            return data;
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error;
+        }
+    };
+
     return {
         //Properties
         accounts,
@@ -99,6 +110,7 @@ export const useAccountStore = () => {
         updateAccount,
         deleteActiveAccount,
         addCardToAccountFn,
-        deleteCardFromAccount
+        deleteCardFromAccount,
+        addTransactionToCard
     };
 }

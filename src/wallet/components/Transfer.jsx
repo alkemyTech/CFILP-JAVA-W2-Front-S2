@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAccountStore } from '../hooks/useAccountStore';
 import {
     IoSwapHorizontalSharp,
     IoArrowForward,
@@ -8,37 +8,30 @@ import {
 } from 'react-icons/io5';
 
 const Transfer = () => {
-    const dispatch = useDispatch();
-    const { accounts, transferMessage } = useSelector(state => state.account);
+
+    const { accounts, addTransactionToCard } = useAccountStore() // Asumiendo que tienes un hook para obtener las cuentas
 
     const [transferDetails, setTransferDetails] = useState({
-        recipientType: 'cbuAlias',
+        tipoTransferencia: 'TRANSFERENCIA',
+        motivo: '',
+        nombreDestinatario: '',
+        bancoDestino: '',
         cbuAlias: '',
-        amount: '',
-        description: '',
-        sourceCardId: '', // Estado para la tarjeta seleccionada
+        cuentaOrigen: '',
+        estado: true
     });
     const [localMessage, setLocalMessage] = useState(null);
     const [isSending, setIsSending] = useState(false);
 
-    // Aplanar todas las tarjetas de todas las cuentas y asociarlas con su accountId y saldo
-    // ¡Cambiado para usar 'tarjetasDto'!
-    const allCards = accounts.flatMap(account =>
-        (account.tarjetasDto || []).map(card => ({ // *** AHORA SE BUSCA 'tarjetasDto' ***
-            ...card,
-            accountId: account.id,
-            accountMoneda: account.moneda,
-            accountSaldo: parseFloat(account.saldo) || 0
-        }))
-    );
 
-    // Encontrar la tarjeta seleccionada por el usuario
-    const selectedCard = allCards.find(card => card.id === transferDetails.sourceCardId);
+    // Filtrar solo cuentas activas
+    const activeAccounts = accounts.filter(account => account.estado !== false);
+
+    // Encontrar la cuenta seleccionada
+    const selectedAccount = activeAccounts.find(acc => acc.idCuenta === transferDetails.cuentaOrigen);
 
     // Determinar el saldo disponible
-    const availableBalance = selectedCard && selectedCard.accountMoneda === 'ARS'
-        ? selectedCard.accountSaldo
-        : 0;
+    const availableBalance = selectedAccount ? parseFloat(selectedAccount.saldo) || 0 : 0;
 
     useEffect(() => {
         if (localMessage) {
@@ -61,16 +54,24 @@ const Transfer = () => {
         setIsSending(true);
         setLocalMessage(null);
 
-        const { cbuAlias, amount, description, sourceCardId } = transferDetails;
+        // Desestructurar para validaciones
+        const {
+            cuentaOrigen,
+            cbuAlias,
+            monto,
+            motivo,
+            nombreDestinatario,
+            bancoDestino
+        } = transferDetails;
 
         // Validaciones
-        if (!cbuAlias.trim() || !amount || !description.trim() || !sourceCardId) {
-            setLocalMessage({ type: 'error', text: 'Todos los campos y la tarjeta de origen son obligatorios.' });
+        if (!cuentaOrigen || !cbuAlias || !monto || !motivo || !nombreDestinatario || !bancoDestino) {
+            setLocalMessage({ type: 'error', text: 'Todos los campos son obligatorios.' });
             setIsSending(false);
             return;
         }
 
-        const numericAmount = parseFloat(amount);
+        const numericAmount = parseFloat(monto);
         if (isNaN(numericAmount) || numericAmount <= 0) {
             setLocalMessage({ type: 'error', text: 'El monto debe ser un número positivo.' });
             setIsSending(false);
@@ -78,34 +79,65 @@ const Transfer = () => {
         }
 
         if (numericAmount > availableBalance) {
-            setLocalMessage({ type: 'error', text: `Saldo insuficiente en la cuenta de la tarjeta. Tienes $${availableBalance.toFixed(2)} disponibles.` });
+            setLocalMessage({
+                type: 'error',
+                text: `Saldo insuficiente. Tienes $${availableBalance.toFixed(2)} disponibles.`
+            });
             setIsSending(false);
             return;
         }
 
-        console.log('Realizando transferencia desde tarjeta:', sourceCardId, 'Detalles:', transferDetails);
+        // Preparar el objeto para enviar al backend
+        const transferData = {
+            tipoTransferencia: transferDetails.tipoTransferencia,
+            motivo: transferDetails.motivo,
+            nombreDestinatario: transferDetails.nombreDestinatario,
+            bancoDestino: transferDetails.bancoDestino,
+            cuentaDestinatario: transferDetails.cbuAlias, // El CBU/Alias ingresado
+            cuentaOrigen: transferDetails.cuentaOrigen, // ID de la cuenta seleccionada
+            monto: numericAmount, // Convertir a número
+            estado: true
+        };
+
+        console.log('Datos de transferencia:', transferData);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Obtener la primera tarjeta asociada a la cuenta (o null si no hay)
+            const account = accounts.find(acc => acc.idCuenta === transferDetails.cuentaOrigen);
+            const tarjeta = account?.tarjetasDto?.[0];
+
+            if (!tarjeta) {
+                throw new Error("No hay tarjetas disponibles para esta cuenta");
+            }
+
+            // Usar addTransactionToCard con el ID de la tarjeta y los datos de transferencia
+            await addTransactionToCard(tarjeta.idTarjeta, transferData);
 
             setLocalMessage({ type: 'success', text: '¡Transferencia realizada con éxito!' });
+
+            // Limpiar el formulario
             setTransferDetails({
-                recipientType: 'cbuAlias',
+                tipoTransferencia: 'debito',
+                motivo: '',
+                nombreDestinatario: '',
+                bancoDestino: '',
                 cbuAlias: '',
-                amount: '',
-                description: '',
-                sourceCardId: '',
+                cuentaOrigen: '',
+                monto: '',
+                estado: true
             });
 
         } catch (error) {
             console.error('Error al realizar la transferencia:', error);
-            setLocalMessage({ type: 'error', text: 'Error al realizar la transferencia. Inténtalo de nuevo.' });
+            setLocalMessage({
+                type: 'error',
+                text: 'Error al realizar la transferencia: ' + (error.message || 'Inténtalo de nuevo')
+            });
         } finally {
             setIsSending(false);
         }
     };
 
-    const displayMessage = localMessage;
 
     return (
         <div className="flex justify-center items-start min-h-[calc(100vh-80px)] py-8 px-4">
@@ -118,13 +150,86 @@ const Transfer = () => {
                 <div className="text-lg text-center mb-6 py-3 px-4 rounded-lg bg-gray-700">
                     <p className="font-semibold">
                         Saldo Disponible: <span className="text-green-400">${availableBalance.toFixed(2)}</span>
-                        {/* Mostrar el tipo y los últimos 4 dígitos de la tarjeta si hay una seleccionada */}
-                        {selectedCard && ` (de ${selectedCard.tipo} ${selectedCard.numero.slice(-4)})`}
+                        {selectedAccount && ` (${selectedAccount.moneda})`}
                     </p>
                 </div>
 
                 <form onSubmit={handleSubmitTransfer} className="space-y-6">
-                    {/* Campo CBU / Alias */}
+                    {/* Cuenta de origen */}
+                    <div>
+                        <label htmlFor="cuentaOrigen" className="block text-lg font-medium mb-2 text-gray-300">
+                            Cuenta Origen
+                        </label>
+                        <select
+                            id="cuentaOrigen"
+                            name="cuentaOrigen"
+                            value={transferDetails.cuentaOrigen}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                            required
+                        >
+                            <option value="">Selecciona una cuenta...</option>
+                            {activeAccounts.map(account => (
+                                <option key={account.idCuenta} value={account.idCuenta}>
+                                    {`${account.moneda} - ${account.cbu.substring(0, 8)}... (Saldo: $${parseFloat(account.saldo).toLocaleString('es-AR')})`}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Tipo de transferencia */}
+                    <div>
+                        <label htmlFor="tipoTransferencia" className="block text-lg font-medium mb-2 text-gray-300">
+                            Tipo de transferencia
+                        </label>
+                        <select
+                            id="tipoTransferencia"
+                            name="tipoTransferencia"
+                            value={transferDetails.tipoTransferencia}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                            required
+                        >
+                            <option value="debito">Débito</option>
+                            <option value="credito">Crédito</option>
+                        </select>
+                    </div>
+
+                    {/* Nombre del destinatario */}
+                    <div>
+                        <label htmlFor="nombreDestinatario" className="block text-lg font-medium mb-2 text-gray-300">
+                            Nombre del destinatario
+                        </label>
+                        <input
+                            type="text"
+                            id="nombreDestinatario"
+                            name="nombreDestinatario"
+                            value={transferDetails.nombreDestinatario}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                            placeholder="Ej: Juan Pérez"
+                            required
+                        />
+                    </div>
+
+                    {/* Banco destino */}
+                    <div>
+                        <label htmlFor="bancoDestino" className="block text-lg font-medium mb-2 text-gray-300">
+                            Banco destino
+                        </label>
+                        <input
+                            type="text"
+                            id="bancoDestino"
+                            name="bancoDestino"
+                            value={transferDetails.bancoDestino}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+                            placeholder="Ej: Banco Nación"
+                            required
+                        />
+                    </div>
+
+                    {/* CBU / Alias del destinatario */}
                     <div>
                         <label htmlFor="cbuAlias" className="block text-lg font-medium mb-2 text-gray-300">
                             CBU / Alias del Destinatario
@@ -141,44 +246,16 @@ const Transfer = () => {
                         />
                     </div>
 
-                    {/* Selector de Tarjeta de Origen */}
-                    <div>
-                        <label htmlFor="sourceCardId" className="block text-lg font-medium mb-2 text-gray-300">
-                            Seleccionar Tarjeta de Origen
-                        </label>
-                        <select
-                            id="sourceCardId"
-                            name="sourceCardId"
-                            value={transferDetails.sourceCardId}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
-                            required
-                        >
-                            <option value="">Selecciona una tarjeta...</option>
-                            {allCards.map(card => (
-                                <option key={card.id} value={card.id}>
-                                    {/* Aquí también mostramos la marca de la tarjeta si es relevante */}
-                                    {`${card.banco} - ${card.tipo} <span class="math-inline">\{card\.numero\.slice\(\-4\)\} \(</span>{card.marca || 'N/A'}) (Cuenta ${card.accountMoneda})`}
-                                </option>
-                            ))}
-                        </select>
-                        {allCards.length === 0 && (
-                            <p className="text-sm text-gray-500 mt-2 text-red-400">
-                                No se encontraron tarjetas asociadas a tus cuentas.
-                            </p>
-                        )}
-                    </div>
-
                     {/* Campo Monto */}
                     <div>
-                        <label htmlFor="amount" className="block text-lg font-medium mb-2 text-gray-300">
+                        <label htmlFor="monto" className="block text-lg font-medium mb-2 text-gray-300">
                             Monto a Transferir
                         </label>
                         <input
                             type="number"
-                            id="amount"
-                            name="amount"
-                            value={transferDetails.amount}
+                            id="monto"
+                            name="monto"
+                            value={transferDetails.monto}
                             onChange={handleInputChange}
                             className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
                             placeholder="Ej: 5000.00"
@@ -188,16 +265,16 @@ const Transfer = () => {
                         />
                     </div>
 
-                    {/* Campo Concepto / Descripción */}
+                    {/* Campo Motivo / Descripción */}
                     <div>
-                        <label htmlFor="description" className="block text-lg font-medium mb-2 text-gray-300">
-                            Concepto / Descripción
+                        <label htmlFor="motivo" className="block text-lg font-medium mb-2 text-gray-300">
+                            Motivo / Descripción
                         </label>
                         <input
                             type="text"
-                            id="description"
-                            name="description"
-                            value={transferDetails.description}
+                            id="motivo"
+                            name="motivo"
+                            value={transferDetails.motivo}
                             onChange={handleInputChange}
                             className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
                             placeholder="Ej: Pago de alquiler / Cena"
@@ -207,10 +284,10 @@ const Transfer = () => {
                     </div>
 
                     {/* Mensaje de éxito/error */}
-                    {displayMessage && (
-                        <div className={`mt-4 p-3 rounded-lg text-center font-medium flex items-center justify-center gap-2 ${displayMessage.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-                            {displayMessage.type === 'success' ? <IoCheckmarkCircle size={20} /> : <IoWarning size={20} />}
-                            <span>{displayMessage.text}</span>
+                    {localMessage && (
+                        <div className={`mt-4 p-3 rounded-lg text-center font-medium flex items-center justify-center gap-2 ${localMessage.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+                            {localMessage.type === 'success' ? <IoCheckmarkCircle size={20} /> : <IoWarning size={20} />}
+                            <span>{localMessage.text}</span>
                         </div>
                     )}
 

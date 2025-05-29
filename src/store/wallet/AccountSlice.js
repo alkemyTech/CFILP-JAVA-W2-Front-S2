@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { add } from 'date-fns';
 
 const initialState = {
     accounts: [],        // Todas las cuentas del usuario
@@ -70,6 +71,26 @@ export const AccountSlice = createSlice({
                 }
                 return account;
             });
+        },
+
+        addTransactionToCard: (state, action) => {
+            const { tarjetaId, transferencia } = action.payload;
+
+            // Actualizar todas las cuentas que puedan contener la tarjeta
+            state.accounts = state.accounts.map(account => {
+                // Si la cuenta tiene tarjetas, buscar la tarjeta específica
+                if (account.tarjetasDto && account.tarjetasDto.length > 0) {
+                    return {
+                        ...account,
+                        tarjetasDto: account.tarjetasDto.map(card =>
+                            card.id === tarjetaId
+                                ? { ...card, transferencias: [...(card.transferencias || []), transferencia] }
+                                : card
+                        )
+                    };
+                }
+                return account;
+            });
         }
     }
 });
@@ -86,4 +107,5 @@ export const {
     setError,
     addCardToAccount,
     removeCardFromAccount,
+    addTransactionToCard
 } = AccountSlice.actions;

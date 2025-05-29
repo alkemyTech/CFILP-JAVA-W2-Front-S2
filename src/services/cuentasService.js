@@ -52,6 +52,14 @@ export const cuentasService = {
         } catch (error) {
             throw new Error(error.response?.data?.message || 'Error deleting card from account');
         }
-    }
+    },
 
+    addTransactionToCard: async (tarjetaId, transferencia) => {
+        try {
+            const { data } = await walletApi.post(`/transferencias/tarjeta/${tarjetaId}`, transferencia);
+            return data;
+        } catch (error) {
+            throw new Error(error.response?.data?.message || 'Error adding transaction to card');
+        }
+    }
 };
