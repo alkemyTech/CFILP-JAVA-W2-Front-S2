@@ -246,6 +246,34 @@ const Transfer = () => {
                         />
                     </div>
 
+                    {/* Selector de Tarjeta de Origen */}
+                    <div>
+                        <label htmlFor="sourceCardId" className="block text-lg font-medium mb-2 text-gray-300">
+                            Seleccionar Tarjeta de Origen
+                        </label>
+                        <select
+                            id="sourceCardId"
+                            name="sourceCardId"
+                            value={transferDetails.sourceCardId}
+                            onChange={handleInputChange}
+                            className="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                            required
+                        >
+                            <option value="">Selecciona una tarjeta...</option>
+                            {allCards.map(card => (
+                                <option key={card.id} value={card.id}>
+                                    {/* Aquí también mostramos la marca de la tarjeta si es relevante */}
+                                    {`${card.banco} - ${card.tipo} <span class="math-inline">\{card\.numero\.slice\(\-4\)\} \(</span>{card.marca || 'N/A'}) (Cuenta ${card.accountMoneda})`}
+                                </option>
+                            ))}
+                        </select>
+                        {allCards.length === 0 && (
+                            <p className="text-sm text-gray-500 mt-2 text-red-400">
+                                No se encontraron tarjetas asociadas a tus cuentas.
+                            </p>
+                        )}
+                    </div>
+
                     {/* Campo Monto */}
                     <div>
                         <label htmlFor="monto" className="block text-lg font-medium mb-2 text-gray-300">
