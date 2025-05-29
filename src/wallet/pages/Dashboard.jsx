@@ -290,7 +290,7 @@ export const Dashboard = () => {
                     ))}
                 </ul>
 
-                <button className="mt-4 text-sm text-blue-400 hover:text-blue-300 flex items-center">
+                {/*<button className="mt-4 text-sm text-blue-400 hover:text-blue-300 flex items-center">
                     Ver historial completo
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -306,7 +306,7 @@ export const Dashboard = () => {
                             d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"
                         />
                     </svg>
-                </button>
+                </button>*/}
             </div>
             <div className="md:col-span-1 bg-[#2D3748] backdrop-blur-md rounded-2xl p-6 border border-gray-700 shadow-md hover:shadow-lg transition-all hover:scale-99 transition-transform duration-200">
                 <CurrencyConverter />
