@@ -3,6 +3,7 @@ import { cuentasService } from "../../services/cuentasService";
 import {
     addAccount,
     addCardToAccount,
+    addTransactionToCard,
     deleteAccount,
     removeCardFromAccount,
     setAccounts,
@@ -86,9 +87,9 @@ export const useAccountStore = () => {
         }
     };
 
-    const addTransactionToCard = async (tarjetaId, transferencia) => {
+    const addTransactionToCardFn = async (tarjetaId, transferencia) => {
         try {
-            const data = await cuentasService.addTransactionToCard(tarjetaId, transferencia);
+            const data = await cuentasService.addTransactionToCardService(tarjetaId, transferencia);
             dispatch(addTransactionToCard({ tarjetaId, transferencia: data }));
             return data;
         } catch (error) {
@@ -111,6 +112,6 @@ export const useAccountStore = () => {
         deleteActiveAccount,
         addCardToAccountFn,
         deleteCardFromAccount,
-        addTransactionToCard
+        addTransactionToCardFn
     };
 }

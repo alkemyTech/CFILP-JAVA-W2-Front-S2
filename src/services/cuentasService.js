@@ -54,7 +54,7 @@ export const cuentasService = {
         }
     },
 
-    addTransactionToCard: async (tarjetaId, transferencia) => {
+    addTransactionToCardService: async (tarjetaId, transferencia) => {
         try {
             const { data } = await walletApi.post(`/transferencias/tarjeta/${tarjetaId}`, transferencia);
             return data;

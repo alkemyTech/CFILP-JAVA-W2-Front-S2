@@ -247,7 +247,7 @@ const Transfer = () => {
                     </div>
 
                     {/* Selector de Tarjeta de Origen */}
-                    <div>
+                    {/* <div>
                         <label htmlFor="sourceCardId" className="block text-lg font-medium mb-2 text-gray-300">
                             Seleccionar Tarjeta de Origen
                         </label>
@@ -262,7 +262,7 @@ const Transfer = () => {
                             <option value="">Selecciona una tarjeta...</option>
                             {allCards.map(card => (
                                 <option key={card.id} value={card.id}>
-                                    {/* Aquí también mostramos la marca de la tarjeta si es relevante */}
+                                 
                                     {`${card.banco} - ${card.tipo} <span class="math-inline">\{card\.numero\.slice\(\-4\)\} \(</span>{card.marca || 'N/A'}) (Cuenta ${card.accountMoneda})`}
                                 </option>
                             ))}
@@ -272,7 +272,7 @@ const Transfer = () => {
                                 No se encontraron tarjetas asociadas a tus cuentas.
                             </p>
                         )}
-                    </div>
+                    </div> */}
 
                     {/* Campo Monto */}
                     <div>
