@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { add } from 'date-fns';
 
 const initialState = {
     accounts: [],        // Todas las cuentas del usuario
@@ -36,11 +37,9 @@ export const AccountSlice = createSlice({
         },
         deleteAccount: (state, action) => {
             // Soft-delete: marca la cuenta como inactiva
-            state.accounts = state.accounts.map(acc =>
-                acc.id === action.payload ? { ...acc, estado: false } : acc
-            );
+            state.accounts = state.accounts.filter(acc => acc.idCuenta !== action.payload);
             // Si la cuenta eliminada es la activa, deselecciónala
-            if (state.activeAccount && state.activeAccount.id === action.payload) {
+            if (state.activeAccount && state.activeAccount.idCuenta === action.payload) {
                 state.activeAccount = null;
             }
         },
@@ -48,28 +47,56 @@ export const AccountSlice = createSlice({
             state.isLoading = false;
             state.error = action.payload;
         },
-        // Opcional: para manejar tarjetas asociadas a una cuenta
+
         addCardToAccount: (state, action) => {
             const { accountId, card } = action.payload;
+            console.log("Añadiendo tarjeta:", card, "a cuenta:", accountId);
             state.accounts = state.accounts.map(acc =>
-                acc.id === accountId
-                    ? { ...acc, tarjetas: [...(acc.tarjetas || []), card] }
+                acc.idCuenta === accountId
+                    ? { ...acc, tarjetasDto: [...(acc.tarjetasDto || []), card] }
                     : acc
             );
         },
         removeCardFromAccount: (state, action) => {
-            const { accountId, cardId } = action.payload;
-            state.accounts = state.accounts.map(acc =>
-                acc.id === accountId
-                    ? { ...acc, tarjetas: acc.tarjetas.filter(card => card.id !== cardId) }
-                    : acc
-            );
+            const cardId = action.payload;
+
+            // Actualizar todas las cuentas que puedan contener la tarjeta
+            state.accounts = state.accounts.map(account => {
+                // Si la cuenta tiene tarjetas, filtrar la que se eliminó
+                if (account.tarjetasDto && account.tarjetasDto.length > 0) {
+                    return {
+                        ...account,
+                        tarjetasDto: account.tarjetasDto.filter(card => card.id !== cardId)
+                    };
+                }
+                return account;
+            });
         },
+
+        addTransactionToCard: (state, action) => {
+            const { tarjetaId, transferencia } = action.payload;
+
+            // Actualizar todas las cuentas que puedan contener la tarjeta
+            state.accounts = state.accounts.map(account => {
+                // Si la cuenta tiene tarjetas, buscar la tarjeta específica
+                if (account.tarjetasDto && account.tarjetasDto.length > 0) {
+                    return {
+                        ...account,
+                        tarjetasDto: account.tarjetasDto.map(card =>
+                            card.id === tarjetaId
+                                ? { ...card, transferencias: [...(card.transferencias || []), transferencia] }
+                                : card
+                        )
+                    };
+                }
+                return account;
+            });
+        }
     }
 });
 
 
-// Action creators are generated for each case reducer function
+
 export const {
     startLoadingAccounts,
     setAccounts,
@@ -80,4 +107,5 @@ export const {
     setError,
     addCardToAccount,
     removeCardFromAccount,
+    addTransactionToCard
 } = AccountSlice.actions;

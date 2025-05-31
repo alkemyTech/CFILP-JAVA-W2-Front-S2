@@ -60,7 +60,7 @@ export const Aside = () => {
                                 className="flex items-center p-2 text-[#395C6B] font-medium rounded-lg dark:text-white hover:bg-[#395C6B] hover:text-white dark:hover:bg-gray-700 group transition-colors"
                             >
                                 <FaBoxOpen className="size-6 text-current group-hover:text-white transition-colors" />
-                                <span className="ml-3">Depósitos</span>
+                                <span className="ml-3">Movimentos</span>
                             </Link>
                         </li>
                         {/* Enlace a Transferencias */}

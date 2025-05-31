@@ -2,11 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { cuentasService } from "../../services/cuentasService";
 import {
     addAccount,
+    addCardToAccount,
+    addTransactionToCard,
+    deleteAccount,
+    removeCardFromAccount,
     setAccounts,
     setActiveAccount,
     setError,
     startLoadingAccounts
-} from "../../store/wallet/AccountSlice";
+} from "../../store";
 
 export const useAccountStore = () => {
     const { accounts, activeAccount, isLoading, error } = useSelector((state) => state.account);
@@ -31,8 +35,14 @@ export const useAccountStore = () => {
     };
 
     // Function to add a new account
-    const addAccountImpl = (account) => {
-        dispatch(addAccount(account));
+    const addAccountImpl = async (userId, TipoMoneda) => {
+        try {
+            const data = await cuentasService.createNewAccount(userId, TipoMoneda);
+            dispatch(addAccount(data));
+        } catch (error) {
+            dispatch(setError(error.message));
+        }
+
     };
 
     // Function to update an existing account
@@ -41,8 +51,51 @@ export const useAccountStore = () => {
     };
 
     // Function to delete an account
-    const deleteAccount = (accountId) => {
-        dispatch(deleteAccount(accountId));
+    const deleteActiveAccount = async (accountId) => {
+        try {
+            await cuentasService.softDeleteAccount(accountId);
+            dispatch(deleteAccount(accountId));
+        } catch (error) {
+            dispatch(setError(error.message));
+        }
+
+    };
+
+    const addCardToAccountFn = async (accountId, newCard) => {
+        try {
+            // Primero, hacer la llamada a la API para crear la tarjeta
+            const data = await cuentasService.addCardToAccount(accountId, newCard);
+
+            // Luego, actualizar el estado en Redux
+            dispatch(addCardToAccount({ accountId, card: data }));
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error; // Re-lanzar el error para manejarlo en el componente
+        }
+    };
+
+    const deleteCardFromAccount = async (cardId) => {
+        try {
+            await cuentasService.deleteCardFromAccount(cardId);
+
+            dispatch(removeCardFromAccount(cardId));
+
+            return true;
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error;
+        }
+    };
+
+    const addTransactionToCardFn = async (tarjetaId, transferencia) => {
+        try {
+            const data = await cuentasService.addTransactionToCardService(tarjetaId, transferencia);
+            dispatch(addTransactionToCard({ tarjetaId, transferencia: data }));
+            return data;
+        } catch (error) {
+            dispatch(setError(error.message));
+            throw error;
+        }
     };
 
     return {
@@ -56,6 +109,9 @@ export const useAccountStore = () => {
         selectActiveAccount,
         addAccountImpl,
         updateAccount,
-        deleteAccount,
+        deleteActiveAccount,
+        addCardToAccountFn,
+        deleteCardFromAccount,
+        addTransactionToCardFn
     };
 }
